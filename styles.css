@@ -1,0 +1,150 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.scoreboard, .calculation {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.calculation {
+    margin-left: 20px;
+}
+
+#result, #calculation, .tichrieng {
+    text-align: right;
+    /* font-size: 30px; */
+}
+
+
+
+#calcu{
+    text-align: right;
+}
+
+#setting{
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
+
+#btnSetting{
+    background-color: transparent;
+    color: black;
+}
+
+#btnSetting:hover{
+    color: rgb(64, 64, 64);
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input[type="number"] {
+    width: 50px;
+}
+
+select {
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+#options{
+    display: block;
+}
+
+#start, #scoreboardId{
+    display: none;
+}
+
+#start {
+    width: 60vw;
+    height: 75vh;
+    text-align: center;
+    font-size: 40px;
+}
+
+#result {
+    font-size: 40px;
+    width: 150px;
+    margin-right: 0px;
+}
+
+.tichrieng {
+    font-size: 20px;
+    width: 110px;
+    margin-right: 0px;
+    display: inline-block;
+    
+}
+
+#divCal {
+    width: 160px;
+    position: relative; /* Đặt phần tử trong vị trí tương đối */
+    left: 50%; /* Di chuyển sang phải 50% so với vị trí gốc */
+    transform: translateX(-50%);
+}
+
+.inp_num {
+    margin-top: 5px;
+}
+
+.popup {
+    font-size: 15px;
+    position: fixed;
+    top: 120%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    display: none;
+    width: 100px;
+}
+
+#popup-correct {
+    background-color: green;
+}
+
+#popup-incorrect {
+    background-color: red;
+}
+
+hr{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+span{
+    font-size: 20px;
+}
+
+.divTichRieng {
+    margin-top: -7px;
+}
