@@ -29,7 +29,6 @@ body {
 }
 
 
-
 #calcu{
     text-align: right;
 }
@@ -91,8 +90,8 @@ select {
 
 #result {
     font-size: 40px;
-    width: 150px;
-    margin-right: 0px;
+    width: 220px;
+    margin: 10px -3px;
 }
 
 .tichrieng {
@@ -104,10 +103,8 @@ select {
 }
 
 #divCal {
-    width: 160px;
-    position: relative; /* Đặt phần tử trong vị trí tương đối */
-    left: 50%; /* Di chuyển sang phải 50% so với vị trí gốc */
-    transform: translateX(-50%);
+    position: absolute; 
+
 }
 
 .inp_num {
@@ -116,16 +113,15 @@ select {
 
 .popup {
     font-size: 15px;
-    position: fixed;
-    top: 120%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    /* position: fixed; */
+    /* transform: translate(-50%, -50%); */
     padding: 10px;
     border-radius: 5px;
     color: white;
     font-weight: bold;
     display: none;
     width: 100px;
+    margin-top: 20px;
 }
 
 #popup-correct {
@@ -147,4 +143,65 @@ span{
 
 .divTichRieng {
     margin-top: -7px;
+}
+
+.inp_on_table {
+    width: 40px;
+    height: 40px;
+    font-size: 40px;
+    text-align: center;
+    border-radius: 0px;
+    border: 1px dotted black;
+}
+
+.inp_on_table1 {
+    width: 40px;
+    height: 40px;
+    font-size: 40px;
+    text-align: center;
+    border-radius: 0px;
+    border: 1px solid black;
+}
+
+.border_bot_multi th {
+    margin: 0px;
+    padding: 0px;
+}
+
+.td_border_bot_multi, .border_bot_division {
+    margin: 0px;
+    padding: 0px;
+    border-bottom: 2px black solid;
+    height: 10px;
+}
+
+tr td {
+    padding: 0px;
+}
+
+.divTableMulti {
+    display: grid;
+    justify-content: center;
+}
+
+.table_normal th {
+    text-align: right;
+}
+
+.td_border_right_multi {
+    border-right: 2px black solid;
+}
+
+#addRowTable {
+    font-size: 12px;
+    padding: 2px;
+    background-color: #66a2e2;
+}
+
+.btnResultContent {
+    width: 30px;
+    height: 30px;
+    padding: 0px;
+    border-radius: 50%;
+    
 }
