@@ -5,10 +5,12 @@
 
 ## ✨ Tính Năng Chính
 
-### 🔐 Hệ Thống Xác Thực
-- **Đăng ký tài khoản** với tài khoản, họ tên, mật khẩu
-- **Đăng nhập** an toàn với Supabase Auth
-- **Lưu trữ tiến độ** và lịch sử bài tập
+### 🔐 Xác Thực & Tài Khoản
+- **Đăng ký**: username (không phải email), họ tên, mật khẩu
+- **Đăng nhập**: dùng username + mật khẩu (nội bộ chuyển thành email giả `username+mathapp@gmail.com`)
+- **Đổi mật khẩu**: nhập mật khẩu hiện tại, mật khẩu mới, có thể chọn đăng xuất sau khi đổi
+- **Single session**: mỗi tài khoản chỉ đăng nhập trên 1 thiết bị tại 1 thời điểm. Đăng nhập nơi khác sẽ tự đăng xuất nơi hiện tại (dựa vào `current_client_id` + Supabase Realtime)
+- **Toast thông báo**: thành công/thất bại cho các thao tác (đăng nhập/đăng ký/đổi mật khẩu/quản trị)
 
 ### 🎯 Các Phép Tính Được Hỗ Trợ
 - **Phép Cộng (+)** - Với phạm vi 10, 20, 100 (có nhớ/không nhớ)
@@ -18,15 +20,17 @@
 
 ### ⚙️ Tùy Chỉnh Độ Khó
 - **Số chữ số**: 1-9 chữ số cho mỗi số
-- **Số lượng bài tập**: 1-50 câu hỏi
+- **Số lượng bài tập**: 1-50 câu **hỏi**
 - **Phạm vi phép cộng**: 10, 20, 100
 - **Loại phép cộng**: Có nhớ hoặc không nhớ
 
-### 📊 Hệ Thống Điểm Số & Lưu Trữ
-- Hiển thị tiến độ real-time
-- Lưu trữ kết quả vào Supabase
-- Theo dõi lịch sử bài tập
-- Thống kê hiệu suất học tập
+### 📊 Dashboard & Quản Trị
+- **/dashboard**: trang người dùng, chọn cấu hình bài tập và bắt đầu luyện tập
+- **/admin/dashboard**: trang quản trị (chỉ admin)
+  - Biểu đồ đăng ký theo ngày/tháng/năm (dựa vào `users.created_at`)
+  - Bảng quản lý user với CRUD (sửa role/username/họ tên; xóa user kèm confirm modal)
+  - Tạo user mới bằng popup modal
+  - Nút đăng xuất
 
 ## 🛠️ Công Nghệ Sử Dụng
 
@@ -68,10 +72,23 @@ Tạo file `.env.local`:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key # dùng cho API admin
 ```
 
 ### 4. Thiết Lập Database
-Chạy SQL script trong file `supabase/schema.sql` trên Supabase Dashboard để tạo các bảng cần thiết.
+1) Chạy toàn bộ SQL trong `supabase/schema.sql` trên Supabase (tạo bảng, RLS, trigger, seed admin role):
+   - Bảng `users` đã có cột `current_client_id` phục vụ single session.
+2) Nếu đã có schema cũ, thêm cột thủ công (an toàn khi đã tồn tại):
+```sql
+ALTER TABLE public.users
+ADD COLUMN IF NOT EXISTS current_client_id TEXT;
+```
+3) Bật Realtime cho bảng `users` để single session hoạt động:
+   - Trong Dashboard: Table Editor → users → Realtime → Enable
+   - Hoặc SQL (nếu publication mặc định tồn tại):
+```sql
+ALTER PUBLICATION supabase_realtime ADD TABLE public.users;
+```
 
 ### 5. Chạy Development Server
 ```bash
@@ -86,14 +103,30 @@ Truy cập [http://localhost:3000](http://localhost:3000) để xem ứng dụng
 ├── app/                    # NextJS App Router
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
+│   ├── page.tsx           # Redirect → /home
+│   ├── home/              # Trang chính (mọi người đều truy cập được)
+│   ├── auth/
+│   │   ├── login/page.tsx
+│   │   ├── register/page.tsx
+│   │   └── change-password/page.tsx
+│   ├── dashboard/page.tsx
+│   ├── practice/page.tsx
+│   └── admin/dashboard/page.tsx
 ├── components/            # React components
 │   ├── auth/             # Authentication components
-│   └── math/             # Math exercise components
+│   ├── math/             # Math exercise components
+│   └── ui/
+│       ├── ToastProvider.tsx
+│       └── Modal.tsx
 ├── lib/                  # Utility libraries
 │   ├── auth.ts           # Authentication logic
 │   ├── math-generator.ts # Math exercise generator
-│   └── supabase.ts       # Supabase client
+│   ├── supabase.ts       # Supabase client (client-side)
+│   ├── supabase-lite.ts  # Supabase không persist session (verify mật khẩu)
+│   ├── supabase-admin.ts # Supabase service role (server-side)
+│   ├── constants.ts      # Hằng số (USERNAME_EMAIL_SUFFIX, routes...)
+│   ├── types.ts          # Kiểu dữ liệu dùng chung
+│   └── utils.ts          # Tiện ích (withTimeout...)
 ├── supabase/             # Database schema
 │   └── schema.sql        # SQL schema
 └── public/               # Static assets
@@ -105,6 +138,8 @@ Truy cập [http://localhost:3000](http://localhost:3000) để xem ứng dụng
 - `id` - UUID (Primary Key, Foreign Key to auth.users)
 - `username` - VARCHAR(50) UNIQUE
 - `full_name` - VARCHAR(100)
+- `role` - TEXT ('admin' | 'user')
+- `current_client_id` - TEXT (single session)
 - `created_at` - TIMESTAMP
 - `updated_at` - TIMESTAMP
 
@@ -151,14 +186,19 @@ Truy cập [http://localhost:3000](http://localhost:3000) để xem ứng dụng
 
 ## 🔧 API Endpoints
 
-Ứng dụng sử dụng Supabase client-side, không cần custom API endpoints. Tất cả operations được thực hiện trực tiếp từ client với Row Level Security.
+### Admin Users API (serverless, yêu cầu `SUPABASE_SERVICE_ROLE_KEY`)
+- `GET /api/admin/users` — Danh sách users
+- `POST /api/admin/users` — Tạo user (Auth + bảng users)
+- `PATCH /api/admin/users` — Cập nhật `username`, `full_name`, `role`
+- `DELETE /api/admin/users?id={id}` — Xóa user (bảng users + Auth)
 
 ## 🛡️ Bảo Mật
 
-- **Row Level Security (RLS)** - Người dùng chỉ truy cập được dữ liệu của mình
-- **Supabase Auth** - Xác thực an toàn
-- **Environment Variables** - Bảo vệ API keys
-- **TypeScript** - Type safety
+- **Row Level Security (RLS)**: user chỉ truy cập dữ liệu của mình; admin có policy riêng
+- **Supabase Auth**: dùng email giả dạng `username+mathapp@gmail.com`
+- **Single session**: `current_client_id` + Realtime buộc 1 phiên/thiết bị
+- **Environment Variables**: tách `NEXT_PUBLIC_*` và `SUPABASE_SERVICE_ROLE_KEY`
+- **TypeScript**: type safety, tách `types.ts`
 
 ## 📱 Responsive Design
 
@@ -171,7 +211,7 @@ Truy cập [http://localhost:3000](http://localhost:3000) để xem ứng dụng
 
 - **Clean, modern design**
 - **Intuitive navigation**
-- **Real-time feedback**
+- **Real-time feedback** (Toast slide in/out)
 - **Progress tracking**
 - **Accessibility** considerations
 
