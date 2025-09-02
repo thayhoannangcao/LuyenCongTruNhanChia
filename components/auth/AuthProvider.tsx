@@ -37,6 +37,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Theo dõi single-session: nếu current_client_id thay đổi khác client hiện tại -> sign out
+  useEffect(() => {
+    if (!user) return
+    const clientId = getClientId()
+    const channel = supabase
+      .channel('user-single-session')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'users',
+        filter: `id=eq.${user.id}`,
+      }, (payload: any) => {
+        const newClient = (payload.new as any)?.current_client_id
+        if (newClient && newClient !== clientId) {
+          supabase.auth.signOut()
+          setUser(null)
+          router.replace('/auth/login')
+        }
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [user])
+
   const getCurrentUser = async () => {
     try {
       const { data: { user: authUser }, error } = await supabase.auth.getUser()
@@ -93,6 +116,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   )
+}
+
+function getClientId(): string | null {
+  if (typeof window === 'undefined') return null
+  return window.localStorage.getItem('app_client_id')
 }
 
 export function useAuth() {

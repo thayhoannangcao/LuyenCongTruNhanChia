@@ -99,11 +99,13 @@ export async function signIn(data: SignInData) {
       throw new Error('Đăng nhập thất bại')
     }
 
-    // Lấy thông tin profile
+    // Lấy/ghi thông tin profile + single-session
+    const clientId = getOrCreateClientId()
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('id, username, full_name, role')
+      .update({ current_client_id: clientId })
       .eq('id', authData.user.id)
+      .select('id, username, full_name, role, current_client_id')
       .single()
 
     if (profileError) {
@@ -125,6 +127,17 @@ export async function signIn(data: SignInData) {
       error: error instanceof Error ? error.message : 'Có lỗi xảy ra' 
     }
   }
+}
+
+function getOrCreateClientId(): string {
+  if (typeof window === 'undefined') return 'server'
+  const key = 'app_client_id'
+  let id = window.localStorage.getItem(key)
+  if (!id) {
+    id = crypto.randomUUID()
+    window.localStorage.setItem(key, id)
+  }
+  return id
 }
 
 // Đăng xuất
