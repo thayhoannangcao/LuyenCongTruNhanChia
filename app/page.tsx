@@ -24,7 +24,7 @@ export default function HomePage() {
     )
   }
 
-  // Nếu chưa đăng nhập, hiển thị trang chủ với nút đăng nhập
+  // Nếu chưa đăng nhập, hiển thị landing và dẫn đến /auth/login hoặc /auth/register
   if (!user && !showAuth) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
@@ -40,7 +40,7 @@ export default function HomePage() {
             
             <div className="space-y-4">
               <button
-                onClick={() => setShowAuth(true)}
+                onClick={() => window.location.href = '/auth/login'}
                 className="btn-primary text-lg px-8 py-3"
               >
                 Bắt đầu luyện tập
@@ -84,39 +84,18 @@ export default function HomePage() {
 
   // Hiển thị form đăng nhập/đăng ký
   if (!user && showAuth) {
-    return (
-      <AuthForm
-        mode={authMode}
-        onSuccess={() => setShowAuth(false)}
-        onSwitchMode={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
-      />
-    )
+    if (typeof window !== 'undefined') {
+      window.location.href = '/auth/login'
+    }
+    return null
   }
 
   // Nếu đã đăng nhập và chưa chọn bài tập
   if (user && !exerciseConfig) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Chào mừng, {user.full_name}!
-              </h1>
-              <p className="text-gray-600">Chọn bài tập để bắt đầu luyện tập</p>
-            </div>
-            <button
-              onClick={signOut}
-              className="btn-secondary"
-            >
-              Đăng xuất
-            </button>
-          </div>
-          
-          <ExerciseSettings onStart={setExerciseConfig} />
-        </div>
-      </div>
-    )
+    if (typeof window !== 'undefined') {
+      window.location.href = '/dashboard'
+    }
+    return null
   }
 
   // Hiển thị bài tập
