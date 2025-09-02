@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Lấy thông tin profile từ bảng users
       const { data: profile, error: profileError } = await supabase
         .from('users')
-        .select('*')
+        .select('id, username, full_name, role')
         .eq('id', authUser.id)
         .single()
 
@@ -62,6 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         id: profile.id,
         username: profile.username,
         full_name: profile.full_name,
+        role: profile.role || (profile.username === 'admin' ? 'admin' : 'user'),
       })
     } catch (error) {
       console.error('Error getting current user:', error)

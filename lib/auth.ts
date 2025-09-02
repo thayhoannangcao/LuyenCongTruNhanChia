@@ -8,6 +8,7 @@ export interface AuthUser {
   id: string
   username: string
   full_name: string
+  role?: 'admin' | 'user'
 }
 
 export interface SignUpData {
@@ -101,7 +102,7 @@ export async function signIn(data: SignInData) {
     // Lấy thông tin profile
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('*')
+      .select('id, username, full_name, role')
       .eq('id', authData.user.id)
       .single()
 
@@ -115,6 +116,7 @@ export async function signIn(data: SignInData) {
         id: profile.id,
         username: profile.username,
         full_name: profile.full_name,
+        role: profile.role || (profile.username === 'admin' ? 'admin' : 'user'),
       }
     }
   } catch (error) {
@@ -152,7 +154,7 @@ export async function getCurrentUser() {
 
     const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('*')
+      .select('id, username, full_name, role')
       .eq('id', user.id)
       .single()
 
@@ -164,6 +166,7 @@ export async function getCurrentUser() {
       id: profile.id,
       username: profile.username,
       full_name: profile.full_name,
+      role: profile.role || (profile.username === 'admin' ? 'admin' : 'user'),
     }
   } catch (error) {
     return null

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
   id UUID REFERENCES auth.users(id) PRIMARY KEY,
   username VARCHAR(50) UNIQUE NOT NULL,
   full_name VARCHAR(100) NOT NULL,
+  role TEXT CHECK (role IN ('admin','user')) DEFAULT 'user',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -53,6 +54,9 @@ CREATE TRIGGER update_users_updated_at
   BEFORE UPDATE ON users 
   FOR EACH ROW 
   EXECUTE FUNCTION update_updated_at_column();
+
+-- Seed: đảm bảo tài khoản 'admin' có role admin
+UPDATE users SET role = 'admin' WHERE username = 'admin';
 
 -- Tạo RLS (Row Level Security) policies
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
