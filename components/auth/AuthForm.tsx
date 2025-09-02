@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { signIn, signUp, type SignInData, type SignUpData } from '@/lib/auth'
+import { useToast } from '@/components/ui/ToastProvider'
 
 interface AuthFormProps {
   mode: 'signin' | 'signup'
@@ -10,6 +11,7 @@ interface AuthFormProps {
 }
 
 export default function AuthForm({ mode, onSuccess, onSwitchMode }: AuthFormProps) {
+  const toast = useToast()
   const [formData, setFormData] = useState<SignInData | SignUpData>({
     username: '',
     password: '',
@@ -32,12 +34,15 @@ export default function AuthForm({ mode, onSuccess, onSwitchMode }: AuthFormProp
       }
 
       if (result.success) {
+        toast.success(mode === 'signin' ? 'Đăng nhập thành công' : 'Đăng ký thành công')
         onSuccess()
       } else {
         setError(result.error || 'Có lỗi xảy ra')
+        toast.error(result.error || 'Có lỗi xảy ra')
       }
     } catch (err) {
       setError('Có lỗi xảy ra, vui lòng thử lại')
+      toast.error('Có lỗi xảy ra, vui lòng thử lại')
     } finally {
       setLoading(false)
     }

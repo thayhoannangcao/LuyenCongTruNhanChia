@@ -3,6 +3,7 @@
 import { useAuth } from '@/components/auth/AuthProvider'
 import ExerciseSettings from '@/components/math/ExerciseSettings'
 import { useRouter } from 'next/navigation'
+import { ROUTE_CHANGE_PASSWORD } from '@/lib/constants'
 
 export default function DashboardPage() {
   const { user, signOut, loading } = useAuth()
@@ -29,6 +30,7 @@ export default function DashboardPage() {
           </div>
           <div className="space-x-2">
             <button className="btn-secondary" onClick={() => router.push('/practice')}>Vào luyện tập</button>
+            <button className="btn-secondary" onClick={() => router.push(ROUTE_CHANGE_PASSWORD)}>Đổi mật khẩu</button>
             <button className="btn-secondary" onClick={signOut}>Đăng xuất</button>
           </div>
         </div>
