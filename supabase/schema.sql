@@ -74,6 +74,35 @@ CREATE POLICY "Users can update own profile" ON users
 CREATE POLICY "Allow user registration" ON users
   FOR INSERT WITH CHECK (auth.uid() = id);
 
+-- Admin policies: admin có thể xem và quản lý toàn bộ users
+CREATE POLICY IF NOT EXISTS "Admin can select all users" ON users
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM users me WHERE me.id = auth.uid() AND me.role = 'admin'
+    )
+  );
+
+CREATE POLICY IF NOT EXISTS "Admin can update any user" ON users
+  FOR UPDATE USING (
+    EXISTS (
+      SELECT 1 FROM users me WHERE me.id = auth.uid() AND me.role = 'admin'
+    )
+  );
+
+CREATE POLICY IF NOT EXISTS "Admin can insert user" ON users
+  FOR INSERT WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM users me WHERE me.id = auth.uid() AND me.role = 'admin'
+    )
+  );
+
+CREATE POLICY IF NOT EXISTS "Admin can delete user" ON users
+  FOR DELETE USING (
+    EXISTS (
+      SELECT 1 FROM users me WHERE me.id = auth.uid() AND me.role = 'admin'
+    )
+  );
+
 -- Policy cho bảng practice_sessions: người dùng chỉ có thể xem và tạo session của chính mình
 CREATE POLICY "Users can view own sessions" ON practice_sessions
   FOR SELECT USING (auth.uid() = user_id);

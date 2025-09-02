@@ -42,6 +42,11 @@ export default function DashboardPage() {
     return null
   }
 
+  if (user.role === 'admin') {
+    router.replace('/admin/dashboard')
+    return null
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
