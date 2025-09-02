@@ -162,7 +162,7 @@ export function generateMultiplicationExercise(config: ExerciseConfig): Exercise
 
 // Tạo bài tập phép chia
 export function generateDivisionExercise(config: ExerciseConfig): ExerciseResult {
-  let num1: number, num2: number
+  let num1: number = 0, num2: number
   
   do {
     num2 = generateRandomNumber(config.num2Digits)

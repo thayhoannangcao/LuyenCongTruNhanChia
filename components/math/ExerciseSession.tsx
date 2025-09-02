@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { generateExerciseList, type ExerciseConfig, type ExerciseResult } from '@/lib/math-generator'
 import ScoreBoard from './ScoreBoard'
 import SimpleExercise from './SimpleExercise'
@@ -21,19 +21,7 @@ export default function ExerciseSession({ config, onComplete }: ExerciseSessionP
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [startTime, setStartTime] = useState<Date | null>(null)
 
-  useEffect(() => {
-    // Tạo danh sách bài tập
-    const exerciseList = generateExerciseList(config)
-    setExercises(exerciseList)
-    setStartTime(new Date())
-
-    // Tạo session trong database nếu user đã đăng nhập
-    if (user) {
-      createSession()
-    }
-  }, [config, user])
-
-  const createSession = async () => {
+  const createSession = useCallback(async () => {
     if (!user) return
 
     try {
@@ -58,7 +46,19 @@ export default function ExerciseSession({ config, onComplete }: ExerciseSessionP
     } catch (error) {
       console.error('Error creating session:', error)
     }
-  }
+  }, [user, config.operation, config.additionRange, config.additionType, config.totalQuestions])
+
+  useEffect(() => {
+    // Tạo danh sách bài tập
+    const exerciseList = generateExerciseList(config)
+    setExercises(exerciseList)
+    setStartTime(new Date())
+
+    // Tạo session trong database nếu user đã đăng nhập
+    if (user) {
+      createSession()
+    }
+  }, [config, user, createSession])
 
   const getDifficultyLevel = (): 'easy' | 'medium' | 'hard' => {
     if (config.additionRange === 10) return 'easy'
