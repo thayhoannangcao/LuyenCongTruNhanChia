@@ -32,7 +32,7 @@ export default function PracticePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6 px-4">
           <h1 className="text-2xl font-bold text-gray-900">Luyện tập</h1>
           <button className="btn-secondary" onClick={() => router.push('/dashboard')}>Quay lại</button>
         </div>

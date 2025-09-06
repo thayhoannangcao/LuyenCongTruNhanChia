@@ -10,6 +10,7 @@ interface SimpleExerciseProps {
 }
 
 export default function SimpleExercise({ exercise, onAnswer, onNext }: SimpleExerciseProps) {
+  console.log(exercise)
   const [userAnswer, setUserAnswer] = useState('')
   const [showResult, setShowResult] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
@@ -45,8 +46,8 @@ export default function SimpleExercise({ exercise, onAnswer, onNext }: SimpleExe
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-center mb-6">Phép tính</h2>
+    <div className="mx-auto bg-white p-6 rounded-lg shadow-md w-full">
+      {/* <h2 className="text-6xl font-bold text-center mb-6">Phép tính</h2> */}
       
       <div className="text-center mb-8">
         <div className="text-4xl font-bold mb-4">
