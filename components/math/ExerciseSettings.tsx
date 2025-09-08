@@ -37,7 +37,7 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
     totalQuestions: 10,
     timeType: 'false',
     timeValue: 3,
-    calculationType: 'true',
+    calculationType: 'false',
     inputDirectionType: 'rtl',
   });
 

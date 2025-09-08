@@ -1,0 +1,195 @@
+.scoreboard,
+.calculation {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.calculation {
+  margin-left: 20px;
+}
+
+#result,
+#calculation,
+.tichrieng {
+  text-align: right;
+  /* font-size: 30px; */
+}
+
+.inp_on_table_normal {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding-right: 3px;
+}
+
+#calcu {
+  text-align: right;
+}
+
+#setting {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+}
+
+#btnSetting {
+  background-color: transparent;
+  color: black;
+}
+
+#btnSetting:hover {
+  color: rgb(64, 64, 64);
+}
+
+#options {
+  display: block;
+}
+
+#start,
+#scoreboardId {
+  display: none;
+}
+
+#start {
+  width: 60vw;
+  height: 75vh;
+  text-align: center;
+  font-size: 40px;
+}
+
+#result {
+  font-size: 40px;
+  width: 220px;
+  margin: 10px -3px;
+}
+
+.tichrieng {
+  font-size: 20px;
+  width: 110px;
+  margin-right: 0px;
+  display: inline-block;
+}
+
+#divCal {
+  position: absolute;
+}
+
+.inp_num {
+  margin-top: 5px;
+}
+
+.popup {
+  font-size: 15px;
+  /* position: fixed; */
+  /* transform: translate(-50%, -50%); */
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  display: none;
+  width: 100px;
+  margin-top: 20px;
+}
+
+#popup-correct {
+  background-color: green;
+}
+
+#popup-incorrect {
+  background-color: red;
+}
+
+#divTableMulti hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#divTableMulti span {
+  font-size: 20px;
+}
+
+.divTichRieng {
+  margin-top: -7px;
+}
+
+.inp_on_table {
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  text-align: center;
+  border-radius: 0px;
+  border: 1px dotted black;
+}
+
+.inp_on_table1 {
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  text-align: center;
+  border-radius: 0px;
+  border: 1px solid black;
+}
+
+.border_bot_multi th {
+  margin: 0px;
+  padding: 0px;
+}
+
+.td_border_bot_multi,
+.border_bot_division {
+  margin: 0px;
+  padding: 0px;
+  border-bottom: 2px black solid;
+  height: 10px;
+}
+
+#divTableMulti tr td {
+  padding: 0px;
+  margin: 0px;
+  width: 40px;
+}
+
+.divTableMulti {
+  display: grid;
+  justify-content: center;
+}
+
+.table_normal th {
+  text-align: right;
+  font-size: 40px;
+}
+
+.td_border_right_multi {
+  border-right: 2px black solid;
+}
+
+#divTableMulti button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#divTableMulti button:hover {
+  background-color: #0056b3;
+}
+
+#addRowTable {
+  font-size: 10px !important;
+  padding: 2px !important;
+  background-color: #66a2e2;
+  width: 80px;
+  text-wrap: nowrap;
+}
+
+.btnResultContent {
+  width: 30px;
+  height: 30px;
+  padding: 0px;
+  border-radius: 50%;
+}
