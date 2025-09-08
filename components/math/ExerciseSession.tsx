@@ -31,8 +31,8 @@ export default function ExerciseSession({ config, onComplete }: ExerciseSessionP
           user_id: user.id,
           operation_type: config.operation,
           difficulty_level: getDifficultyLevel(),
-          addition_range: config.additionRange,
-          addition_type: config.additionType,
+          addition_range: config.additionSettings.additionRangeType,
+          addition_type: config.additionSettings.additionType,
           total_questions: config.totalQuestions,
         })
         .select()
@@ -46,7 +46,7 @@ export default function ExerciseSession({ config, onComplete }: ExerciseSessionP
     } catch (error) {
       console.error('Error creating session:', error)
     }
-  }, [user, config.operation, config.additionRange, config.additionType, config.totalQuestions])
+  }, [user, config.operation, config.additionSettings.additionRangeType, config.additionSettings.additionType, config.totalQuestions])
 
   useEffect(() => {
     // Tạo danh sách bài tập
@@ -61,11 +61,11 @@ export default function ExerciseSession({ config, onComplete }: ExerciseSessionP
   }, [config, user, createSession])
 
   const getDifficultyLevel = (): 'easy' | 'medium' | 'hard' => {
-    if (config.additionRange === 10) return 'easy'
-    if (config.additionRange === 20) return 'medium'
-    if (config.additionRange === 100) return 'hard'
+    if (config.additionSettings.additionRangeType === 1) return 'easy'
+    if (config.additionSettings.additionRangeType === 2) return 'medium'
+    if (config.additionSettings.additionRangeType === 3) return 'hard'
     
-    const totalDigits = config.num1Digits + config.num2Digits
+    const totalDigits = config.numsDigits.reduce((acc, digit) => acc + digit, 0)
     if (totalDigits <= 3) return 'easy'
     if (totalDigits <= 5) return 'medium'
     return 'hard'
@@ -88,7 +88,7 @@ export default function ExerciseSession({ config, onComplete }: ExerciseSessionP
           .from('practice_results')
           .insert({
             session_id: sessionId,
-            question: currentExercise.question,
+            question: currentExercise.nums.join(' + '),
             user_answer: currentExercise.userAnswer || '',
             correct_answer: currentExercise.correctAnswer,
             is_correct: isCorrect,
@@ -150,7 +150,7 @@ export default function ExerciseSession({ config, onComplete }: ExerciseSessionP
   const currentExercise = exercises[currentIndex]
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="flex h-[calc(100vh-130px)] py-4 px-[200px] gap-4">
       <ScoreBoard
         currentQuestion={currentIndex + 1}
         totalQuestions={exercises.length}

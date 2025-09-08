@@ -93,11 +93,17 @@ export default function DashboardPage() {
         <ExerciseSettings onStart={(config) => {
           const params = new URLSearchParams({
             operation: config.operation,
-            num1: String(config.num1Digits),
-            num2: String(config.num2Digits),
+            ar: config.additionSettings.additionRangeType ? String(config.additionSettings.additionRangeType) : '',
+            at: config.additionSettings.additionType ? String(config.additionSettings.additionType) : '',
+            sr: config.subtractionSettings.subtractionRangeType ? String(config.subtractionSettings.subtractionRangeType) : '',
+            st: config.subtractionSettings.subtractionType ? String(config.subtractionSettings.subtractionType) : '',
+            nt: String(config.numTerms),
+            nums: String(config.numsDigits),
+            rv: String(config.rangeValue),
             total: String(config.totalQuestions),
-            ar: config.additionRange ? String(config.additionRange) : '',
-            at: config.additionType ? String(config.additionType) : '',
+            tt: config.timeType ? String(config.timeType) : '',
+            ct: config.calculationType ? String(config.calculationType) : '',
+            it: config.inputDirectionType ? String(config.inputDirectionType) : '',
           })
           router.push(`/practice?${params.toString()}`)
         }} />
