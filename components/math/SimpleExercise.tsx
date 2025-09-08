@@ -51,7 +51,7 @@ export default function SimpleExercise({ exercise, onAnswer, onNext }: SimpleExe
       
       <div className="text-center mb-8">
         <div className="text-4xl font-bold mb-4">
-          {exercise.question} = ?
+          {exercise.nums.join(' + ')} = ?
         </div>
         
         <form onSubmit={handleSubmit}>

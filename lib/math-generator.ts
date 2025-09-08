@@ -2,24 +2,66 @@
 export type OperationType = 'addition' | 'subtraction' | 'multiplication' | 'division'
 
 // Các phạm vi cho phép cộng
-export type AdditionRange = 10 | 20 | 100
+export type AdditionRangeType = 1 | 2 | 3
 
 // Loại phép cộng (có nhớ hoặc không nhớ)
 export type AdditionType = 'with_carry' | 'without_carry'
 
+// Loại tính thời gian
+export type TimeType = 'true' | 'false'
+
+// Loại phép tính (tính hoặc đặt tính rồi tính)
+export type CalculationType = 'true' | 'false'
+
+// Các phạm vi cho phép trừ
+export type SubtractionRangeType = 1 | 2 | 3
+
+// Loại phép trừ (có nhớ hoặc không nhớ)
+export type SubtractionType = 'with_carry' | 'without_carry'
+
+// Loại đặt tính (ngang hoặc dọc)
+export type InputDirectionType = 'rtl' | 'ltr'
+
+// Cấu hình bài tập phép cộng
+export interface AdditionSettings {
+  additionRangeType: AdditionRangeType
+  additionType: AdditionType
+}
+
+// Cấu hình bài tập phép trừ
+export interface SubtractionSettings {
+  subtractionRangeType: SubtractionRangeType
+  subtractionType: SubtractionType
+}
+
+// Cấu hình bài tập phép nhân
+export interface MultiplicationSettings {
+}
+
+// Cấu hình bài tập phép chia
+export interface DivisionSettings {
+}
+
+
 // Cấu hình bài tập
 export interface ExerciseConfig {
   operation: OperationType
-  num1Digits: number
-  num2Digits: number
+  additionSettings: AdditionSettings
+  subtractionSettings: SubtractionSettings
+  multiplicationSettings: MultiplicationSettings
+  divisionSettings: DivisionSettings
+  numTerms: number
+  numsDigits: number[]
+  rangeValue: number
   totalQuestions: number
-  additionRange?: AdditionRange
-  additionType?: AdditionType
+  timeType?: TimeType
+  calculationType?: CalculationType
+  inputDirectionType?: InputDirectionType
 }
 
 // Kết quả bài tập
 export interface ExerciseResult {
-  question: string
+  nums: number[]
   correctAnswer: string
   userAnswer?: string
   isCorrect?: boolean
@@ -58,17 +100,13 @@ export function countDigits(num: number): number {
 }
 
 // Kiểm tra phép cộng có nhớ hay không
-export function hasCarry(num1: number, num2: number): boolean {
-  const str1 = num1.toString()
-  const str2 = num2.toString()
-  
-  const maxLength = Math.max(str1.length, str2.length)
+export function hasCarry(nums: number[]): boolean {
+  const strs = nums.map(num => num.toString())
+  const maxLength = Math.max(...strs.map(str => str.length))
   
   for (let i = 0; i < maxLength; i++) {
-    const digit1 = parseInt(str1[str1.length - 1 - i] || '0')
-    const digit2 = parseInt(str2[str2.length - 1 - i] || '0')
-    
-    if (digit1 + digit2 >= 10) {
+    const digits = strs.map(str => parseInt(str[str.length - 1 - i] || '0'))
+    if (digits.reduce((a, b) => a + b, 0) >= 10) {
       return true
     }
   }
@@ -78,53 +116,73 @@ export function hasCarry(num1: number, num2: number): boolean {
 
 // Tạo số cho phép cộng trong phạm vi cụ thể
 export function generateNumbersForAddition(
-  range: AdditionRange, 
+  numsDigits: number,
+  range: AdditionRangeType, 
   type: AdditionType
-): { num1: number; num2: number } {
-  let num1: number, num2: number
+): { nums: number[] } {
+  let nums = []
+
+  let rangeValue = 0;
+  switch (range) {
+    case 1:
+      rangeValue = numsDigits * 10 
+      break
+    case 2:
+      rangeValue = 100
+      break
+  }
   
   do {
-    switch (range) {
-      case 10:
-        num1 = Math.floor(Math.random() * 10) + 1
-        num2 = Math.floor(Math.random() * 10) + 1
-        break
-      case 20:
-        num1 = Math.floor(Math.random() * 20) + 1
-        num2 = Math.floor(Math.random() * 20) + 1
-        break
-      case 100:
-        num1 = Math.floor(Math.random() * 100) + 1
-        num2 = Math.floor(Math.random() * 100) + 1
-        break
+    for (let i = 0; i < numsDigits; i++) {
+      nums[i] = Math.floor(Math.random() * 10) + 1
     }
   } while (
-    num1 + num2 > range || 
-    (type === 'with_carry' && !hasCarry(num1, num2)) ||
-    (type === 'without_carry' && hasCarry(num1, num2))
+    nums.reduce((a, b) => a + b, 0) > rangeValue
   )
+
+  // do {
+  //   switch (range) {
+  //     case 1:
+  //       nums = [Math.floor(Math.random() * 10) + 1, Math.floor(Math.random() * 10) + 1]
+  //       break
+  //     case 2:
+  //       nums = [Math.floor(Math.random() * 20) + 1, Math.floor(Math.random() * 20) + 1]
+  //       break
+  //     case 3:
+  //       nums = [Math.floor(Math.random() * 100) + 1, Math.floor(Math.random() * 100) + 1]
+  //       break
+  //   }
+  // } while (
+  //   nums.reduce((a, b) => a + b, 0) > range || 
+  //   (type === 'with_carry' && !hasCarry(nums)) ||
+  //   (type === 'without_carry' && hasCarry(nums))
+  // )
+
+  const hasCarryy = hasCarry(nums)
+  console.log('--------------------------------')
+  console.log(type)
+  console.log(range)
+  console.log(nums)
+  console.log(hasCarryy)
+
   
-  return { num1, num2 }
+  return { nums }
 }
 
 // Tạo bài tập phép cộng
 export function generateAdditionExercise(config: ExerciseConfig): ExerciseResult {
-  let num1: number, num2: number
-  
-  if (config.additionRange && config.additionType) {
-    const numbers = generateNumbersForAddition(config.additionRange, config.additionType)
-    num1 = numbers.num1
-    num2 = numbers.num2
+  let nums: number[]
+  if (config.additionSettings.additionRangeType && config.additionSettings.additionType) {
+    const numbers = generateNumbersForAddition(config.numsDigits.length, config.additionSettings.additionRangeType, config.additionSettings.additionType)
+    nums = numbers.nums
   } else {
-    num1 = generateRandomNumber(config.num1Digits)
-    num2 = generateRandomNumber(config.num2Digits)
+    nums = generateNumbersForAddition(config.numsDigits.length, config.additionSettings.additionRangeType, config.additionSettings.additionType).nums
   }
   
-  const correctAnswer = num1 + num2
-  const question = `${num1} + ${num2}`
+  const correctAnswer = nums.reduce((a, b) => a + b, 0)
   
   return {
-    question,
+    nums,
     correctAnswer: correctAnswer.toString(),
   }
 }
@@ -183,6 +241,7 @@ export function generateDivisionExercise(config: ExerciseConfig): ExerciseResult
 
 // Tạo danh sách bài tập
 export function generateExerciseList(config: ExerciseConfig): ExerciseResult[] {
+  console.log(config)
   const exercises: ExerciseResult[] = []
   
   for (let i = 0; i < config.totalQuestions; i++) {
