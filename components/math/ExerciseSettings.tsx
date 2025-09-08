@@ -10,11 +10,7 @@ import type {
   CalculationType,
 } from '@/lib/math-generator';
 import AddSettings from './settings/AddSettings';
-import {
-  generateRandomNumberWithMaxAndDigits,
-  generateRandomNumber,
-  countDigits,
-} from '@/lib/math-generator';
+import { generateNumbersForAddition } from '@/lib/math-generator';
 
 interface ExerciseSettingsProps {
   onStart: (config: ExerciseConfig) => void;
@@ -40,7 +36,7 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
     rangeValue: 10,
     totalQuestions: 10,
     timeType: 'false',
-    timeValue: 1,
+    timeValue: 3,
     calculationType: 'true',
     inputDirectionType: 'rtl',
   });
@@ -51,26 +47,6 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
     } else {
       return 10 ** (n - 1);
     }
-  };
-
-  function maxOfDigits(n: number): number {
-    if (n <= 0) return 0;
-    return Math.pow(10, n) - 1;
-  }
-
-  const isInvalidRangeAndDigits = (
-    numTerms: number,
-    numsDigits: number[],
-    rangeValue: number
-  ) => {
-    const lenRangeValue = countDigits(rangeValue);
-
-    for (let i = 0; i < numTerms; i++) {
-      if (numsDigits[i] < 1 || numsDigits[i] > 9) {
-        return true;
-      }
-    }
-    return false;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -117,20 +93,32 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
       return;
     }
 
-    if (config.additionSettings.additionRangeType !== 3) {
-      config.additionSettings.additionRangeValue = undefined;
-      if (config.additionSettings.additionRangeType !== 2) {
-        config.numsDigits = Array(config.numTerms).fill(1);
+    if (config.operation === 'addition') {
+      if (config.additionSettings.additionRangeType !== 3) {
+        config.additionSettings.additionRangeValue = undefined;
+        if (config.additionSettings.additionRangeType !== 2) {
+          config.numsDigits = Array(config.numTerms).fill(1);
+        }
       }
-    }
 
-    if (config.additionSettings.additionRangeType === 3) {
-      let sum = 0;
-      for (let i = 0; i < config.numTerms; i++) {
-        sum += minNumber(config.numsDigits[i]);
+      if (config.additionSettings.additionRangeType === 3) {
+        let sum = 0;
+        for (let i = 0; i < config.numTerms; i++) {
+          sum += minNumber(config.numsDigits[i]);
+        }
+        if (sum > (config.additionSettings.additionRangeValue || 0)) {
+          alert('Vui lòng tăng phạm vi hoặc giảm số chữ số');
+          return;
+        }
       }
-      if (sum > (config.additionSettings.additionRangeValue || 0)) {
-        alert('Vui lòng tăng phạm vi hoặc giảm số chữ số');
+
+      const numbers = generateNumbersForAddition(
+        config.numTerms,
+        (config.numsDigits as number[]).join(',') as unknown as number[],
+        config.additionSettings
+      );
+      if (numbers.errorMessage) {
+        alert(numbers.errorMessage);
         return;
       }
     }

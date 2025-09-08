@@ -140,7 +140,7 @@ export function generateNumbersForAddition(
   numTerms: number,
   numsDigits: number[],
   additionSettings: AdditionSettings
-): { nums: number[] } {
+): { nums: number[]; errorMessage: string } {
   let nums = [];
 
   let rangeValue = 0;
@@ -158,12 +158,14 @@ export function generateNumbersForAddition(
     .map(Number);
   const maxWhileLoop = 10;
   let indexWhileLoop = 0;
+  let errorMessage = '';
 
   do {
     indexWhileLoop++;
 
     if (indexWhileLoop > maxWhileLoop) {
-      redirect('/dashboard');
+      errorMessage = 'Không tạo được bài tập, vui lòng kiểm tra lại cấu hình';
+      break;
     }
 
     switch (additionSettings.additionRangeType) {
@@ -203,7 +205,7 @@ export function generateNumbersForAddition(
     (additionSettings.additionType === 'without_carry' && hasCarry(nums))
   );
 
-  return { nums };
+  return { nums, errorMessage };
   // return { nums: [1,2,3,4] }
 }
 

@@ -180,6 +180,7 @@ export default function ExerciseSession({
         exercise={currentExercise}
         onAnswer={handleAnswer}
         onNext={handleNext}
+        config={config}
       />
     </div>
   );
