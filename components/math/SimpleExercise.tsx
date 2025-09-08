@@ -23,6 +23,8 @@ export default function SimpleExercise({
   const [timer, setTimer] = useState(
     config.timeType === 'true' ? config.timeValue : 3000
   );
+  const [isNextExercise, setIsNextExercise] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const timerIdRef = useRef<number | null>(null);
 
@@ -47,6 +49,12 @@ export default function SimpleExercise({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isNextExercise) {
+      setIsNextExercise(false);
+      onNext();
+      return;
+    }
+
     if (timerIdRef.current !== null) {
       clearInterval(timerIdRef.current);
       timerIdRef.current = null;
@@ -67,9 +75,7 @@ export default function SimpleExercise({
     setShowResult(true);
     onAnswer(correct);
 
-    setTimeout(() => {
-      onNext();
-    }, 2000);
+    setIsNextExercise(true);
   };
 
   useEffect(() => {
@@ -118,10 +124,10 @@ export default function SimpleExercise({
             placeholder="Nhập đáp án"
             className="w-full rounded-md border border-gray-300 py-3 text-center text-2xl focus:outline-none focus:ring-2 focus:ring-primary-500"
             autoFocus
-            disabled={showResult}
+            readOnly={showResult}
           />
 
-          {timer == 0 && (
+          {(timer == 0 || isNextExercise) && (
             <button
               type="button"
               onClick={onNext}
@@ -131,7 +137,7 @@ export default function SimpleExercise({
             </button>
           )}
 
-          {timer != 0 && (
+          {timer != 0 && !isNextExercise && (
             <button
               type="submit"
               className="mt-4 w-full rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"

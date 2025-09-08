@@ -156,7 +156,7 @@ export function generateNumbersForAddition(
   const numsDigitsArray = (numsDigits as unknown as string)
     .split(',')
     .map(Number);
-  const maxWhileLoop = 10;
+  const maxWhileLoop = 50;
   let indexWhileLoop = 0;
   let errorMessage = '';
 
@@ -164,7 +164,8 @@ export function generateNumbersForAddition(
     indexWhileLoop++;
 
     if (indexWhileLoop > maxWhileLoop) {
-      errorMessage = 'Không tạo được bài tập, vui lòng kiểm tra lại cấu hình';
+      errorMessage =
+        'Không tạo được bài tập, vui lòng thử lại hoặc kiểm tra lại cài đặt';
       break;
     }
 
