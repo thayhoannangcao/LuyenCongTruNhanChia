@@ -1,4 +1,3 @@
-
 // function calculationOperatorMultiply(num1, num2, operator) {
 //     var quanNum1 = quanNum(num1);
 //     var quanNum2 = quanNum(num2);
@@ -68,7 +67,6 @@
 //     td.style.height = '5px';
 //     tr.appendChild(td);
 //     table.appendChild(tr);
-
 
 //     // ***************************************************************************************
 //     // ***************************************************************************************

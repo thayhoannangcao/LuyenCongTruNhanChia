@@ -1,21 +1,19 @@
-'use client'
+'use client';
 
-import AuthForm from '@/components/auth/AuthForm'
-import { useRouter } from 'next/navigation'
+import AuthForm from '@/components/auth/AuthForm';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <AuthForm
       mode="signin"
       onSuccess={() => {
-        router.replace('/dashboard')
+        router.replace('/dashboard');
       }}
       onSwitchMode={() => {
-        router.push('/auth/register')
+        router.push('/auth/register');
       }}
     />
-  )
+  );
 }
-
-

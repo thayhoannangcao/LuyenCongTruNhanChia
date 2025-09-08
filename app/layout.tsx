@@ -1,33 +1,32 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { AuthProvider } from '@/components/auth/AuthProvider'
-import { ToastProvider } from '@/components/ui/ToastProvider'
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { AuthProvider } from '@/components/auth/AuthProvider';
+import { ToastProvider } from '@/components/ui/ToastProvider';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Luyện Tập Toán Học',
-  description: 'Ứng dụng luyện tập các phép tính cộng, trừ, nhân, chia cho học sinh',
+  description:
+    'Ứng dụng luyện tập các phép tính cộng, trừ, nhân, chia cho học sinh',
   icons: {
     icon: '/avt.png',
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="vi">
       <body className={inter.className}>
         <AuthProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
+          <ToastProvider>{children}</ToastProvider>
         </AuthProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -1,86 +1,90 @@
-'use client'
+'use client';
 
-import { useAuth } from '@/components/auth/AuthProvider'
-import ExerciseSettings from '@/components/math/ExerciseSettings'
-import { useRouter } from 'next/navigation'
-import { ROUTE_CHANGE_PASSWORD } from '@/lib/constants'
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useAuth } from '@/components/auth/AuthProvider';
+import ExerciseSettings from '@/components/math/ExerciseSettings';
+import { useRouter } from 'next/navigation';
+import { ROUTE_CHANGE_PASSWORD } from '@/lib/constants';
+import { useState, useMemo, useRef, useEffect } from 'react';
 
 export default function DashboardPage() {
-  const { user, signOut, loading } = useAuth()
-  const router = useRouter()
+  const { user, signOut, loading } = useAuth();
+  const router = useRouter();
 
   // Hooks phải khai báo trước mọi return
-  const [menuOpen, setMenuOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const userInitials = useMemo(() => {
-    const name = (user?.full_name?.trim() || user?.username || 'U') as string
-    const parts = name.split(' ').filter(Boolean)
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-  }, [user?.full_name, user?.username])
+    const name = (user?.full_name?.trim() || user?.username || 'U') as string;
+    const parts = name.split(' ').filter(Boolean);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }, [user?.full_name, user?.username]);
 
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
-      if (!menuRef.current) return
-      if (!(e.target instanceof Node)) return
-      if (!menuRef.current.contains(e.target)) setMenuOpen(false)
-    }
-    document.addEventListener('click', onDocClick)
-    return () => document.removeEventListener('click', onDocClick)
-  }, [])
+      if (!menuRef.current) return;
+      if (!(e.target instanceof Node)) return;
+      if (!menuRef.current.contains(e.target)) setMenuOpen(false);
+    };
+    document.addEventListener('click', onDocClick);
+    return () => document.removeEventListener('click', onDocClick);
+  }, []);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">Đang tải...</div>
-    )
+      <div className="flex min-h-screen items-center justify-center">
+        Đang tải...
+      </div>
+    );
   }
 
   if (!user) {
-    router.replace('/auth/login')
-    return null
+    router.replace('/auth/login');
+    return null;
   }
 
   if (user.role === 'admin') {
-    router.replace('/admin/dashboard')
-    return null
+    router.replace('/admin/dashboard');
+    return null;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Chào mừng, {user.full_name}!</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Chào mừng, {user.full_name}!
+            </h1>
             <p className="text-gray-600">Chọn bài tập để bắt đầu luyện tập</p>
           </div>
           <div className="relative" ref={menuRef}>
             <button
-              className="h-10 w-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-semibold shadow hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              onClick={() => setMenuOpen(v => !v)}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 font-semibold text-white shadow hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              onClick={() => setMenuOpen((v) => !v)}
               aria-haspopup="menu"
               aria-expanded={menuOpen}
             >
               {userInitials}
             </button>
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-md border z-50 overflow-hidden">
+              <div className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-md border bg-white shadow-lg">
                 <button
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
                   onClick={() => {
-                    setMenuOpen(false)
-                    router.push(ROUTE_CHANGE_PASSWORD)
+                    setMenuOpen(false);
+                    router.push(ROUTE_CHANGE_PASSWORD);
                   }}
                 >
                   Đổi mật khẩu
                 </button>
                 <div className="h-px bg-gray-100" />
                 <button
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-red-600"
+                  className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-50"
                   onClick={() => {
-                    setMenuOpen(false)
-                    signOut()
+                    setMenuOpen(false);
+                    signOut();
                   }}
                 >
                   Đăng xuất
@@ -90,26 +94,45 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <ExerciseSettings onStart={(config) => {
-          const params = new URLSearchParams({
-            operation: config.operation,
-            ar: config.additionSettings.additionRangeType ? String(config.additionSettings.additionRangeType) : '',
-            at: config.additionSettings.additionType ? String(config.additionSettings.additionType) : '',
-            sr: config.subtractionSettings.subtractionRangeType ? String(config.subtractionSettings.subtractionRangeType) : '',
-            st: config.subtractionSettings.subtractionType ? String(config.subtractionSettings.subtractionType) : '',
-            nt: String(config.numTerms),
-            nums: String(config.numsDigits),
-            rv: String(config.rangeValue),
-            total: String(config.totalQuestions),
-            tt: config.timeType ? String(config.timeType) : '',
-            ct: config.calculationType ? String(config.calculationType) : '',
-            it: config.inputDirectionType ? String(config.inputDirectionType) : '',
-          })
-          router.push(`/practice?${params.toString()}`)
-        }} />
+        <ExerciseSettings
+          onStart={(config) => {
+            const params = new URLSearchParams({
+              operation: config.operation,
+              ar: config.additionSettings.additionRangeType
+                ? String(config.additionSettings.additionRangeType)
+                : '',
+              at: config.additionSettings.additionType
+                ? String(config.additionSettings.additionType)
+                : '',
+              arv: config.additionSettings.additionRangeValue
+                ? String(config.additionSettings.additionRangeValue)
+                : '',
+              sr: config.subtractionSettings.subtractionRangeType
+                ? String(config.subtractionSettings.subtractionRangeType)
+                : '',
+              st: config.subtractionSettings.subtractionType
+                ? String(config.subtractionSettings.subtractionType)
+                : '',
+              srv: config.subtractionSettings.subtractionRangeValue
+                ? String(config.subtractionSettings.subtractionRangeValue)
+                : '',
+              nt: String(config.numTerms),
+              nums: String(config.numsDigits),
+              rv: String(config.rangeValue),
+              total: String(config.totalQuestions),
+              tt: config.timeType ? String(config.timeType) : '',
+              tv: config.timeValue ? String(config.timeValue) : '',
+              ct: config.calculationType ? String(config.calculationType) : '',
+              it: config.inputDirectionType
+                ? String(config.inputDirectionType)
+                : '',
+            });
+            router.push(`/practice?${params.toString()}`);
+          }}
+        />
       </div>
     </div>
-  )
+  );
 }
 
-
+// http://localhost:3000/practice?operation=addition&ar=3&at=without_carry&arv=10&sr=1&st=without_carry&srv=10&nt=2&nums=1%2C1&rv=10&total=10&tt=false&tv=1&ct=true&it=rtl
