@@ -53,9 +53,14 @@ export default function Vertical({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const inputValue = (
-      document.querySelector('.inp_on_table_normal') as HTMLInputElement
-    ).value;
+    let inputValue = '';
+    if (document.querySelector('.inp_on_table_normal') as HTMLInputElement) {
+      inputValue = (
+        document.querySelector('.inp_on_table_normal') as HTMLInputElement
+      ).value;
+    } else {
+      return;
+    }
 
     if (isNextExercise) {
       setIsNextExercise(false);
@@ -68,10 +73,10 @@ export default function Vertical({
       timerIdRef.current = null;
     }
 
-    if (!inputValue?.trim() && timer != 0) {
-      alert('Vui lòng nhập đáp án');
-      return;
-    }
+    // if (!inputValue?.trim() && timer != 0) {
+    //   alert('Vui lòng nhập đáp án');
+    //   return;
+    // }
 
     if (timer == 0) {
       onNext();
@@ -82,6 +87,10 @@ export default function Vertical({
     setIsCorrect(correct);
     setShowResult(true);
     onAnswer(correct);
+
+    (
+      document.querySelector('.inp_on_table_normal') as HTMLInputElement
+    ).readOnly = true;
 
     setIsNextExercise(true);
   };

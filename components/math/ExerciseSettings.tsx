@@ -10,7 +10,11 @@ import type {
   CalculationType,
 } from '@/lib/math-generator';
 import AddSettings from './settings/AddSettings';
-import { generateNumbersForAddition } from '@/lib/math-generator';
+import {
+  generateNumbersForAddition,
+  generateSubtractionExercise,
+} from '@/lib/math-generator';
+import SubSettings from './settings/SubSettings';
 
 interface ExerciseSettingsProps {
   onStart: (config: ExerciseConfig) => void;
@@ -18,7 +22,7 @@ interface ExerciseSettingsProps {
 
 export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
   const [config, setConfig] = useState<ExerciseConfig>({
-    operation: 'addition',
+    operation: 'subtraction',
     additionSettings: {
       additionRangeType: 1,
       additionType: 'without_carry',
@@ -122,6 +126,34 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
         return;
       }
     }
+
+    if (config.operation === 'subtraction') {
+      if (config.subtractionSettings.subtractionRangeType !== 3) {
+        config.subtractionSettings.subtractionRangeValue = undefined;
+        if (config.subtractionSettings.subtractionRangeType !== 2) {
+          config.numsDigits = Array(config.numTerms).fill(1);
+        }
+      }
+
+      if (config.subtractionSettings.subtractionRangeType === 3) {
+        let sum = 0;
+        for (let i = 0; i < config.numTerms; i++) {
+          sum += minNumber(config.numsDigits[i]);
+        }
+        if (sum > (config.subtractionSettings.subtractionRangeValue || 0)) {
+          alert('Vui lòng tăng phạm vi hoặc giảm số chữ số');
+          return;
+        }
+      }
+
+      const numbers = generateSubtractionExercise(config);
+      if (numbers.errorMessage) {
+        alert(numbers.errorMessage);
+        return;
+      }
+    }
+
+    // console.log('config', config);
 
     onStart(config);
   };
@@ -241,6 +273,14 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
         {/* Cài đặt phép cộng đặc biệt */}
         {config.operation === 'addition' && (
           <AddSettings
+            config={config}
+            renderRangeValue={renderRangeValue}
+            handleConfigChange={handleConfigChange}
+          />
+        )}
+
+        {config.operation === 'subtraction' && (
+          <SubSettings
             config={config}
             renderRangeValue={renderRangeValue}
             handleConfigChange={handleConfigChange}

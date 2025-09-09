@@ -68,10 +68,10 @@ export default function Horizontal({
       timerIdRef.current = null;
     }
 
-    if (!userAnswer.trim() && timer != 0) {
-      alert('Vui lòng nhập đáp án');
-      return;
-    }
+    // if (!userAnswer.trim() && timer != 0) {
+    //   alert('Vui lòng nhập đáp án');
+    //   return;
+    // }
 
     if (timer == 0) {
       onNext();

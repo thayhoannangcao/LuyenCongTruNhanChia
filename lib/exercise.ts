@@ -526,7 +526,12 @@ export function calculationOperatorDivision(num1: number, num2: number) {
         event.inputType !== 'deleteContentForward'
       ) {
         if (numEnd !== quanNum1) {
-          document.getElementById(thisId.slice(0, -1) + (numEnd - 1))!.focus();
+          const prevEl = document.getElementById(
+            thisId.slice(0, -1) + (numEnd - 1)
+          );
+          if (prevEl) {
+            (prevEl as HTMLElement).focus();
+          }
         }
       }
     }

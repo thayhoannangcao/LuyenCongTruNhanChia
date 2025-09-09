@@ -72,6 +72,12 @@ export interface ExerciseResult {
   correctAnswer: string;
   userAnswer?: string;
   isCorrect?: boolean;
+  errorMessage?: string;
+}
+
+// Tạo số ngẫu nhiên theo max
+export function generateRandomNumberWithMax(max: number): number {
+  return Math.floor(Math.random() * (max + 1));
 }
 
 // Tạo số ngẫu nhiên với số chữ số cho trước
@@ -135,6 +141,26 @@ export function hasCarry(nums: number[]): boolean {
   return false;
 }
 
+export function hasBorrow(nums: number[]): boolean {
+  if (nums.length < 2) return false;
+
+  const strs = nums.map((num) => num.toString());
+  const maxLength = Math.max(...strs.map((str) => str.length));
+
+  for (let i = 0; i < maxLength; i++) {
+    const digits = strs.map((str) => parseInt(str[str.length - 1 - i] || '0'));
+    const first = digits[0];
+    const rest = digits.slice(1);
+    const sumRest = rest.reduce((a, b) => a + b, 0);
+
+    if (first < sumRest) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // Tạo số cho phép cộng trong phạm vi cụ thể
 export function generateNumbersForAddition(
   numTerms: number,
@@ -151,50 +177,44 @@ export function generateNumbersForAddition(
     case 2:
       rangeValue = 100;
       break;
+    case 3:
+      rangeValue = additionSettings.additionRangeValue || 0;
+      break;
   }
 
   const numsDigitsArray = (numsDigits as unknown as string)
     .split(',')
     .map(Number);
-  const maxWhileLoop = 50;
+  const maxWhileLoop = 100;
   let indexWhileLoop = 0;
   let errorMessage = '';
 
+  let sumMax = 0;
+  for (let i = 0; i < numTerms; i++) {
+    sumMax += Math.pow(10, numsDigitsArray[i]) - 1;
+  }
+
+  let customRangeValue = rangeValue;
+  if (sumMax < rangeValue) {
+    customRangeValue = sumMax;
+  }
+
   do {
     indexWhileLoop++;
-
+    let randomSum = generateRandomNumberWithMax(customRangeValue);
     if (indexWhileLoop > maxWhileLoop) {
       errorMessage =
         'Không tạo được bài tập, vui lòng thử lại hoặc kiểm tra lại cài đặt';
       break;
     }
 
-    switch (additionSettings.additionRangeType) {
-      case 1:
-        for (let i = 0; i < numTerms; i++) {
-          nums[i] = generateRandomNumber(numsDigitsArray[i]);
-        }
-        break;
-      case 2:
-        for (let i = 0; i < numTerms; i++) {
-          nums[i] = generateRandomNumber(numsDigitsArray[i]);
-        }
-        break;
-      case 3:
-        for (let i = 0; i < numTerms; i++) {
-          if (
-            countDigits(additionSettings.additionRangeValue || rangeValue) ===
-            numsDigitsArray[i]
-          ) {
-            nums[i] = generateRandomNumberWithMaxAndDigits(
-              additionSettings.additionRangeValue || rangeValue,
-              numsDigitsArray[i]
-            );
-          } else {
-            nums[i] = generateRandomNumber(numsDigitsArray[i]);
-          }
-        }
-        break;
+    for (let i = 0; i < numTerms; i++) {
+      nums[i] = generateRandomNumberWithMaxAndDigits(
+        randomSum,
+        numsDigitsArray[i]
+      );
+      if (nums[i] > randomSum) continue;
+      randomSum -= nums[i];
     }
   } while (
     nums.reduce((a, b) => a + b, 0) >
@@ -207,7 +227,6 @@ export function generateNumbersForAddition(
   );
 
   return { nums, errorMessage };
-  // return { nums: [1,2,3,4] }
 }
 
 // Tạo bài tập phép cộng
@@ -241,23 +260,73 @@ export function generateAdditionExercise(
   };
 }
 
-// Tạo bài tập phép trừ
 export function generateSubtractionExercise(
   config: ExerciseConfig
 ): ExerciseResult {
-  let num1: number, num2: number;
+  const numTerms = config.numTerms;
+  const numsDigits = config.numsDigits;
+  const subtractionSettings = config.subtractionSettings;
+
+  let nums = [];
+
+  let rangeValue = 0;
+  switch (subtractionSettings.subtractionRangeType) {
+    case 1:
+      rangeValue = numTerms * 10;
+      break;
+    case 2:
+      rangeValue = 100;
+      break;
+    case 3:
+      rangeValue = subtractionSettings.subtractionRangeValue || 0;
+      break;
+  }
+
+  let numsDigitsArray: number[];
+  if (Array.isArray(numsDigits)) {
+    numsDigitsArray = numsDigits;
+  } else {
+    numsDigitsArray = (numsDigits as unknown as string).split(',').map(Number);
+  }
+
+  const maxWhileLoop = 100;
+  let indexWhileLoop = 0;
+  let errorMessage = '';
 
   do {
-    num1 = generateRandomNumber(config.num1Digits);
-    num2 = generateRandomNumber(config.num2Digits);
-  } while (num1 <= num2); // Đảm bảo kết quả không âm
+    indexWhileLoop++;
+    let randomSum = generateRandomNumberWithMax(rangeValue);
 
-  const correctAnswer = num1 - num2;
-  const question = `${num1} - ${num2}`;
+    if (indexWhileLoop > maxWhileLoop) {
+      errorMessage =
+        'Không tạo được bài tập, vui lòng thử lại hoặc kiểm tra lại cài đặt';
+      break;
+    }
+
+    for (let i = 0; i < numTerms; i++) {
+      nums[i] = generateRandomNumberWithMaxAndDigits(
+        randomSum,
+        numsDigitsArray[i]
+      );
+      if (nums[i] > randomSum) continue;
+
+      if (i === 0) {
+        randomSum = nums[i];
+      } else {
+        randomSum -= nums[i];
+      }
+    }
+  } while (
+    nums.reduce((a, b) => a - b) < 0 ||
+    (subtractionSettings.subtractionType === 'with_carry' &&
+      !hasBorrow(nums)) ||
+    (subtractionSettings.subtractionType === 'without_carry' && hasBorrow(nums))
+  );
 
   return {
-    question,
-    correctAnswer: correctAnswer.toString(),
+    nums,
+    errorMessage,
+    correctAnswer: nums.reduce((a, b) => a - b).toString(),
   };
 }
 
@@ -265,14 +334,14 @@ export function generateSubtractionExercise(
 export function generateMultiplicationExercise(
   config: ExerciseConfig
 ): ExerciseResult {
-  const num1 = generateRandomNumber(config.num1Digits);
-  const num2 = generateRandomNumber(config.num2Digits);
-  const correctAnswer = num1 * num2;
-  const question = `${num1} × ${num2}`;
+  // const num1 = generateRandomNumber(config.num1Digits);
+  // const num2 = generateRandomNumber(config.num2Digits);
+  // const correctAnswer = num1 * num2;
+  // const question = `${num1} × ${num2}`;
 
   return {
-    question,
-    correctAnswer: correctAnswer.toString(),
+    nums: [103, 21],
+    correctAnswer: '2163',
   };
 }
 
@@ -280,23 +349,23 @@ export function generateMultiplicationExercise(
 export function generateDivisionExercise(
   config: ExerciseConfig
 ): ExerciseResult {
-  let num1: number = 0,
-    num2: number;
+  // let num1: number = 0,
+  //   num2: number;
 
-  do {
-    num2 = generateRandomNumber(config.num2Digits);
-    if (num2 === 1) continue;
+  // do {
+  //   num2 = generateRandomNumber(config.num2Digits);
+  //   if (num2 === 1) continue;
 
-    const quotient = generateRandomNumberForDivision(config.num1Digits, num2);
-    num1 = num2 * quotient;
-  } while (countDigits(num1) !== config.num1Digits || num1 === num2);
+  //   const quotient = generateRandomNumberForDivision(config.num1Digits, num2);
+  //   num1 = num2 * quotient;
+  // } while (countDigits(num1) !== config.num1Digits || num1 === num2);
 
-  const correctAnswer = Math.floor(num1 / num2);
-  const question = `${num1} ÷ ${num2}`;
+  // const correctAnswer = Math.floor(num1 / num2);
+  // const question = `${num1} ÷ ${num2}`;
 
   return {
-    question,
-    correctAnswer: correctAnswer.toString(),
+    nums: [2163, 21],
+    correctAnswer: '103',
   };
 }
 
