@@ -10,6 +10,6 @@ export default function Division({
 }) {
   useEffect(() => {
     calculationOperatorDivision(num1, num2);
-  }, []);
+  }, [num1, num2]);
   return <div id="divTableMulti"></div>;
 }

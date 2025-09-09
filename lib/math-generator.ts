@@ -95,7 +95,11 @@ export function generateRandomNumberWithMaxAndDigits(
   digits: number
 ): number {
   const min = Math.pow(10, digits - 1);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  const maxDigits = Math.pow(10, digits) - 1;
+  const maxCurrent = max > maxDigits ? maxDigits : max;
+  const random = Math.random() * (maxCurrent - min + 1) + min;
+
+  return Math.floor(random);
 }
 
 // Tạo số ngẫu nhiên cho phép chia
@@ -209,6 +213,9 @@ export function generateNumbersForAddition(
     }
 
     for (let i = 0; i < numTerms; i++) {
+      if (numsDigitsArray[i] > countDigits(randomSum)) {
+        continue;
+      }
       nums[i] = generateRandomNumberWithMaxAndDigits(
         randomSum,
         numsDigitsArray[i]
@@ -217,6 +224,9 @@ export function generateNumbersForAddition(
       randomSum -= nums[i];
     }
   } while (
+    Array.from(nums).some(
+      (n) => n === null || n === undefined || n === 0 || isNaN(Number(n))
+    ) ||
     nums.reduce((a, b) => a + b, 0) >
       (additionSettings.additionRangeType == 3 &&
       additionSettings.additionRangeValue
@@ -304,6 +314,9 @@ export function generateSubtractionExercise(
     }
 
     for (let i = 0; i < numTerms; i++) {
+      if (numsDigitsArray[i] > countDigits(randomSum)) {
+        continue;
+      }
       nums[i] = generateRandomNumberWithMaxAndDigits(
         randomSum,
         numsDigitsArray[i]
@@ -317,6 +330,9 @@ export function generateSubtractionExercise(
       }
     }
   } while (
+    Array.from(nums).some(
+      (n) => n === null || n === undefined || n === 0 || isNaN(Number(n))
+    ) ||
     nums.reduce((a, b) => a - b) < 0 ||
     (subtractionSettings.subtractionType === 'with_carry' &&
       !hasBorrow(nums)) ||

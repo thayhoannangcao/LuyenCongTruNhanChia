@@ -10,6 +10,6 @@ export default function Multiplication({
 }) {
   useEffect(() => {
     calculationOperatorMultiply(num1, num2);
-  }, []);
+  }, [num1, num2]);
   return <div id="divTableMulti"></div>;
 }

@@ -77,11 +77,29 @@ export function calculationOperatorAddAndSub(
   input.id = 'result';
   input.dir = 'rtl';
 
+  let original = '';
+
   input.addEventListener('input', (e) => {
     const target = e.target as HTMLInputElement;
-    const rawValue = target.value;
-    const reversed = rawValue.split('').reverse().join('');
-    target.value = reversed;
+
+    const prevReversed = original.split('').reverse().join('');
+    const newChar = target.value.replace(prevReversed, '');
+
+    if (/^\d$/.test(newChar)) {
+      original += newChar;
+    }
+
+    target.value = original.split('').reverse().join('');
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace') {
+      original = original.slice(0, -1);
+
+      input.value = original.split('').reverse().join('');
+
+      e.preventDefault();
+    }
   });
 
   if (doDaiGachChan) {

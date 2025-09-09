@@ -60,7 +60,7 @@ export default function SubSettings({
 
       {renderRangeValue(numTerms)}
 
-      {config.additionSettings.additionRangeType !== 1 &&
+      {config.subtractionSettings.subtractionRangeType !== 1 &&
         Array.from({ length: numTerms }, (_, index) => (
           <div key={index}>
             <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -69,7 +69,9 @@ export default function SubSettings({
             <input
               type="number"
               min="1"
-              max={config.additionSettings.additionRangeType === 2 ? 2 : 9}
+              max={
+                config.subtractionSettings.subtractionRangeType === 2 ? 2 : 9
+              }
               value={config.numsDigits[index]}
               onChange={(e) => {
                 handleConfigChange('numsDigits', [
@@ -85,7 +87,7 @@ export default function SubSettings({
 
       <div>
         <label className="mb-2 block text-sm font-medium text-gray-700">
-            Loại phép trừ:
+          Loại phép trừ:
         </label>
         <div className="space-y-2">
           <label className="flex items-center">
@@ -93,7 +95,9 @@ export default function SubSettings({
               type="radio"
               name="subtractionType"
               value="without_carry"
-              checked={config.subtractionSettings.subtractionType === 'without_carry'}
+              checked={
+                config.subtractionSettings.subtractionType === 'without_carry'
+              }
               onChange={(e) =>
                 handleConfigChange('subtractionSettings', {
                   ...config.subtractionSettings,
@@ -109,7 +113,9 @@ export default function SubSettings({
               type="radio"
               name="subtractionType"
               value="with_carry"
-              checked={config.subtractionSettings.subtractionType === 'with_carry'}
+              checked={
+                config.subtractionSettings.subtractionType === 'with_carry'
+              }
               onChange={(e) =>
                 handleConfigChange('subtractionSettings', {
                   ...config.subtractionSettings,

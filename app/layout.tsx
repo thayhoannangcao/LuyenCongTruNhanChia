@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     'Ứng dụng luyện tập các phép tính cộng, trừ, nhân, chia cho học sinh',
   icons: {
-    icon: '/avt.png',
+    icon: '/logo.png',
   },
 };
 

@@ -22,7 +22,7 @@ interface ExerciseSettingsProps {
 
 export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
   const [config, setConfig] = useState<ExerciseConfig>({
-    operation: 'subtraction',
+    operation: 'addition',
     additionSettings: {
       additionRangeType: 1,
       additionType: 'without_carry',
@@ -246,6 +246,88 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
     );
   };
 
+  const renderRangeValueSubtraction = (numTerms: number) => {
+    return (
+      <div>
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          Phạm vi:
+        </label>
+        <div className="space-y-2">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="subtractionRangeType"
+              value="1"
+              checked={config.subtractionSettings.subtractionRangeType === 1}
+              onChange={(e) =>
+                handleConfigChange('subtractionSettings', {
+                  ...config.subtractionSettings,
+                  subtractionRangeType: parseInt(
+                    e.target.value
+                  ) as AdditionRangeType,
+                })
+              }
+              className="mr-2"
+            />
+            Trong phạm vi {numTerms}0
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="subtractionRangeType"
+              value="2"
+              checked={config.subtractionSettings.subtractionRangeType === 2}
+              onChange={(e) =>
+                handleConfigChange('subtractionSettings', {
+                  ...config.subtractionSettings,
+                  subtractionRangeType: parseInt(
+                    e.target.value
+                  ) as AdditionRangeType,
+                })
+              }
+              className="mr-2"
+            />
+            Trong phạm vi 100
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="subtractionRangeType"
+              value="3"
+              checked={config.subtractionSettings.subtractionRangeType === 3}
+              onChange={(e) =>
+                handleConfigChange('subtractionSettings', {
+                  ...config.subtractionSettings,
+                  subtractionRangeType: parseInt(
+                    e.target.value
+                  ) as AdditionRangeType,
+                })
+              }
+              className="mr-2"
+            />
+            Tự chọn
+          </label>
+          {config.subtractionSettings.subtractionRangeType === 3 && (
+            <label className="flex items-center">
+              <input
+                type="number"
+                name="subtractionRangeValue"
+                value={config.subtractionSettings.subtractionRangeValue}
+                onChange={(e) =>
+                  handleConfigChange('subtractionSettings', {
+                    ...config.subtractionSettings,
+                    subtractionRangeValue: parseInt(e.target.value),
+                  })
+                }
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </label>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
       <h2 className="mb-6 text-center text-2xl font-bold">Cài đặt bài tập</h2>
@@ -282,7 +364,7 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
         {config.operation === 'subtraction' && (
           <SubSettings
             config={config}
-            renderRangeValue={renderRangeValue}
+            renderRangeValue={renderRangeValueSubtraction}
             handleConfigChange={handleConfigChange}
           />
         )}
