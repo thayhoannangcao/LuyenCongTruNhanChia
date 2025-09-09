@@ -227,8 +227,6 @@ export async function changePassword(payload: ChangePasswordPayload) {
       throw new Error('Mật khẩu hiện tại không đúng');
     }
 
-    console.log('verifyData', verifyData);
-
     // 3) Cập nhật mật khẩu mới bằng REST để tránh treo do SDK
     const accessToken = sessionData.session.access_token;
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;

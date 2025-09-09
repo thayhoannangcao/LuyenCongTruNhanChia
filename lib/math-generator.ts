@@ -302,7 +302,6 @@ export function generateDivisionExercise(
 
 // Tạo danh sách bài tập
 export function generateExerciseList(config: ExerciseConfig): ExerciseResult[] {
-  console.log(config);
   const exercises: ExerciseResult[] = [];
 
   for (let i = 0; i < config.totalQuestions; i++) {

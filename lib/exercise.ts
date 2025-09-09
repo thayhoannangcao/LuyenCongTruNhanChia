@@ -75,6 +75,14 @@ export function calculationOperatorAddAndSub(
   input.className = 'inp_on_table_normal';
   input.type = 'text';
   input.id = 'result';
+  input.dir = 'rtl';
+
+  input.addEventListener('input', (e) => {
+    const target = e.target as HTMLInputElement;
+    const rawValue = target.value;
+    const reversed = rawValue.split('').reverse().join('');
+    target.value = reversed;
+  });
 
   if (doDaiGachChan) {
     input.style.width = doDaiGachChan + 'px';
