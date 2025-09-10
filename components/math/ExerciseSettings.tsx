@@ -22,7 +22,7 @@ interface ExerciseSettingsProps {
 
 export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
   const [config, setConfig] = useState<ExerciseConfig>({
-    operation: 'addition',
+    operation: 'multiplication',
     additionSettings: {
       additionRangeType: 1,
       additionType: 'without_carry',

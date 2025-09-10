@@ -119,6 +119,96 @@ export function calculationOperatorAddAndSub(
   document.getElementById('result')!.focus();
 }
 
+
+export function checkAnswerMultiply(num1: number, num2: number) {
+  var quanNum1 = quanNum(num1);
+  var quanNum2 = quanNum(num2);
+  var resultMulti = num1 * num2;
+  var quanResultMulti = quanNum(resultMulti);
+  var tichrieng = [];
+
+  // Tính giá trị của từng tích riêng
+  for (let i = 0; i < quanNum2; i++) {
+    var tich = num1 * Math.floor(num2 / Math.pow(10, quanNum2 - i - 1));
+    tichrieng.push(tich);
+    num2 = num2 % Math.pow(10, quanNum2 - i - 1);
+  }
+
+  tichrieng.reverse();
+  tichrieng.push(resultMulti);
+
+  var arrTichRieng = [];
+  for (let i = 0; i <= quanNum2; i++) {
+    arrTichRieng.push(i + 1);
+    arrTichRieng[i + 1] = [];
+
+    let numberArr = Array.from(String(tichrieng[i]), Number);
+    numberArr.reverse();
+    // console.log(numberArr);
+    let arr = new Array(quanResultMulti).fill('');
+
+    for (let j = 1; j <= quanResultMulti; j++) {
+      if (numberArr[j - 1] != undefined) {
+        // console.log(j-1);
+        // console.log(numberArr[j-1]);
+        if (i != quanNum2) {
+          arr[quanResultMulti - i - j] = String(numberArr[j - 1]);
+        } else {
+          arr[j - 1] = String(numberArr[j - 1]);
+        }
+      }
+    }
+
+    arrTichRieng[i + 1] = arr;
+
+    if (i == quanNum2) {
+      (arrTichRieng[i + 1] as string[]).reverse();
+    }
+
+    if (quanNum2 == 1) {
+      // arrTichRieng[i + 1].reverse
+      break;
+    }
+  }
+  // console.log(arrTichRieng);
+
+  var arrTichRiengInp = [];
+  if (quanNum2 > 1) {
+    for (let i = 1; i <= quanNum2 + 1; i++) {
+      arrTichRiengInp.push(i);
+      arrTichRiengInp[i] = [];
+      for (let j = quanResultMulti; j >= 1; j--) {
+        // console.log(document.getElementById('inp_line_' + i + '_' + j).value);
+        (arrTichRiengInp[i] as string[]).push(
+          (document.getElementById('inp_line_' + i + '_' + j) as HTMLInputElement).value
+        );
+      }
+    }
+  } else {
+    for (let i = 1; i <= quanNum2; i++) {
+      arrTichRiengInp.push(i);
+      arrTichRiengInp[i] = [];
+      for (let j = 1; j <= quanResultMulti; j++) {
+        // console.log(document.getElementById('inp_line_' + i + '_' + j).value);
+        (arrTichRiengInp[i] as string[]).push(
+          (document.getElementById('inp_line_' + i + '_' + j) as HTMLInputElement).value
+        );
+      }
+      (arrTichRiengInp[i] as string[]).reverse();
+    }
+  }
+
+  // console.log(arrTichRieng);
+  // console.log(arrTichRiengInp);
+
+  for (let i = 1; i <= quanNum2 + 1; i++) {
+    if (JSON.stringify(arrTichRieng[i]) != JSON.stringify(arrTichRiengInp[i])) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
 export function calculationOperatorMultiply(num1: number, num2: number) {
   var quanNum1 = quanNum(num1);
   var quanNum2 = quanNum(num2);

@@ -5,6 +5,7 @@ import Subtraction from './vertical/Subtraction';
 import Multiplication from './vertical/Multiplication';
 import Division from './vertical/Division';
 import { ExerciseConfig, ExerciseResult } from '@/lib/math-generator';
+import { checkAnswerMultiply } from '@/lib/exercise';
 
 interface VerticalProps {
   exercise: ExerciseResult;
@@ -50,8 +51,27 @@ export default function Vertical({
     }
   }, [exercise, showResult, timer]);
 
+  const handleCheckAnswerMultiply = (): boolean => {
+    return checkAnswerMultiply(exercise.nums[0], exercise.nums[1]) === 1;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (config.operation === 'multiplication') {
+      const check = handleCheckAnswerMultiply();
+      if (check === true) {
+        setIsCorrect(true);
+        setShowResult(true);
+        onAnswer(true);
+        return;
+      } else {
+        setIsCorrect(false);
+        setShowResult(true);
+        onAnswer(false);
+        return;
+      }
+    }
 
     let inputValue = '';
     if (document.querySelector('.inp_on_table_normal') as HTMLInputElement) {
