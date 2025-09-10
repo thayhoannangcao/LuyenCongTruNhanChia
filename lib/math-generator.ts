@@ -224,6 +224,7 @@ export function generateNumbersForAddition(
       randomSum -= nums[i];
     }
   } while (
+    (nums.length === 0) ||
     Array.from(nums).some(
       (n) => n === null || n === undefined || n === 0 || isNaN(Number(n))
     ) ||
@@ -330,6 +331,7 @@ export function generateSubtractionExercise(
       }
     }
   } while (
+    (nums.length === 0) ||
     Array.from(nums).some(
       (n) => n === null || n === undefined || n === 0 || isNaN(Number(n))
     ) ||
@@ -388,28 +390,43 @@ export function generateDivisionExercise(
 // Tạo danh sách bài tập
 export function generateExerciseList(config: ExerciseConfig): ExerciseResult[] {
   const exercises: ExerciseResult[] = [];
+  const seen = new Set<string>();
 
-  for (let i = 0; i < config.totalQuestions; i++) {
+  let attempts = 0;
+
+  while (exercises.length < config.totalQuestions) {
     let exercise: ExerciseResult;
 
     switch (config.operation) {
-      case 'addition':
+      case "addition":
         exercise = generateAdditionExercise(config);
         break;
-      case 'subtraction':
+      case "subtraction":
         exercise = generateSubtractionExercise(config);
         break;
-      case 'multiplication':
+      case "multiplication":
         exercise = generateMultiplicationExercise(config);
         break;
-      case 'division':
+      case "division":
         exercise = generateDivisionExercise(config);
         break;
       default:
-        throw new Error('Loại phép tính không hợp lệ');
+        throw new Error("Loại phép tính không hợp lệ");
     }
 
-    exercises.push(exercise);
+    const key = `${exercise.nums}`;
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      exercises.push(exercise);
+      attempts = 0;
+    } else {
+      attempts++;
+      if (attempts >= 10) {
+        exercises.push(exercise);
+        attempts = 0;
+      }
+    }
   }
 
   return exercises;
