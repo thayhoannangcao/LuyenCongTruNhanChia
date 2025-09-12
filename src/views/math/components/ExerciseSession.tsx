@@ -9,7 +9,7 @@ import {
 import ScoreBoard from './ScoreBoard';
 import SimpleExercise from './SimpleExercise';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/components/auth/AuthProvider';
+import { useAuth } from '@/components/layouts/AuthProvider';
 
 interface ExerciseSessionProps {
   config: ExerciseConfig;

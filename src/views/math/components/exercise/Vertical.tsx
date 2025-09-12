@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import '../../../app/exercise.css';
+import '@/src/styles/exercise.css';
 import Addition from './vertical/Addition';
 import Subtraction from './vertical/Subtraction';
 import Multiplication from './vertical/Multiplication';

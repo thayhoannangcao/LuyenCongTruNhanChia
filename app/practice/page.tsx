@@ -2,8 +2,8 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { useAuth } from '@/components/auth/AuthProvider';
-import ExerciseSession from '@/components/math/ExerciseSession';
+import { useAuth } from '@/components/layouts/AuthProvider';
+import ExerciseSession from '@/src/views/math/components/ExerciseSession';
 import type {
   AdditionRangeType,
   AdditionSettings,

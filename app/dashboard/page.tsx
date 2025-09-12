@@ -1,7 +1,7 @@
 'use client';
 
-import { useAuth } from '@/components/auth/AuthProvider';
-import ExerciseSettings from '@/components/math/ExerciseSettings';
+import { useAuth } from '@/components/layouts/AuthProvider';
+import ExerciseSettings from '@/src/views/math/components/ExerciseSettings';
 import { useRouter } from 'next/navigation';
 import { ROUTE_CHANGE_PASSWORD } from '@/src/constants/base.constants';
 import { useState, useMemo, useRef, useEffect } from 'react';
