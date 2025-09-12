@@ -66,7 +66,7 @@ export default function SubSettings({
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Số chữ số của số thứ {index + 1}:
             </label>
-            <input
+            {/* <input
               type="number"
               min="1"
               max={
@@ -81,7 +81,24 @@ export default function SubSettings({
                 ]);
               }}
               className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
+            /> */}
+            <select
+              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              value={config.numsDigits[index]}
+              onChange={(e) => {
+                handleConfigChange('numsDigits', [
+                  ...config.numsDigits.slice(0, index),
+                  parseInt(e.target.value),
+                  ...config.numsDigits.slice(index + 1),
+                ]);
+              }}
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
           </div>
         ))}
 

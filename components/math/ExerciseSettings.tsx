@@ -13,8 +13,10 @@ import AddSettings from './settings/AddSettings';
 import {
   generateNumbersForAddition,
   generateSubtractionExercise,
+  generateMultiplicationExercise,
 } from '@/lib/math-generator';
 import SubSettings from './settings/SubSettings';
+import MultiSettings from './settings/MultiSettings';
 
 interface ExerciseSettingsProps {
   onStart: (config: ExerciseConfig) => void;
@@ -33,7 +35,11 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
       subtractionType: 'without_carry',
       subtractionRangeValue: 10,
     },
-    multiplicationSettings: {},
+    multiplicationSettings: {
+      multiplicationTable: 2,
+      additionToMultiplicationTable: 2,
+    },
+    exerciseType: 'multi_multiplication_table',
     divisionSettings: {},
     numTerms: 2,
     numsDigits: [1, 1],
@@ -151,6 +157,10 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
         alert(numbers.errorMessage);
         return;
       }
+    }
+
+    if (config.operation === 'multiplication') {
+      const numbers = generateMultiplicationExercise(config);
     }
 
     // console.log('config', config);
@@ -369,6 +379,13 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
           />
         )}
 
+        {config.operation === 'multiplication' && (
+          <MultiSettings
+            config={config}
+            handleConfigChange={handleConfigChange}
+          />
+        )}
+
         {/* Số câu hỏi */}
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -386,45 +403,50 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
           />
         </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Phép tính:
-          </label>
-          <div className="space-y-2">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="calculation"
-                value="true"
-                checked={config.calculationType === 'true'}
-                onChange={(e) =>
-                  handleConfigChange(
-                    'calculationType',
-                    e.target.value as CalculationType
-                  )
-                }
-                className="mr-2"
-              />
-              Tính
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="calculation"
-                value="false"
-                checked={config.calculationType === 'false'}
-                onChange={(e) =>
-                  handleConfigChange(
-                    'calculationType',
-                    e.target.value as CalculationType
-                  )
-                }
-                className="mr-2"
-              />
-              Đặt tính rồi tính
-            </label>
-          </div>
-        </div>
+        {config.exerciseType !== 'multi_multiplication_table' &&
+          config.exerciseType !== 'multi_addition_to_multiplication' &&
+          config.exerciseType !== 'multi_comparison' &&
+          config.exerciseType !== 'multi_find_unknown' && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Phép tính:
+              </label>
+              <div className="space-y-2">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="calculation"
+                    value="true"
+                    checked={config.calculationType === 'true'}
+                    onChange={(e) =>
+                      handleConfigChange(
+                        'calculationType',
+                        e.target.value as CalculationType
+                      )
+                    }
+                    className="mr-2"
+                  />
+                  Tính
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="calculation"
+                    value="false"
+                    checked={config.calculationType === 'false'}
+                    onChange={(e) =>
+                      handleConfigChange(
+                        'calculationType',
+                        e.target.value as CalculationType
+                      )
+                    }
+                    className="mr-2"
+                  />
+                  Đặt tính rồi tính
+                </label>
+              </div>
+            </div>
+          )}
 
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700">

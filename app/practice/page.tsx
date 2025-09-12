@@ -15,6 +15,8 @@ import type {
   TimeType,
   SubtractionSettings,
   SubtractionType,
+  ExerciseType,
+  MultiplicationSettings,
 } from '@/lib/math-generator';
 
 export default function PracticePage() {
@@ -60,6 +62,16 @@ export default function PracticePage() {
       ? (params.get('it') as any)
       : (undefined as InputDirectionType | undefined);
     const rangeValue = Number(params.get('rv') || '0');
+    const exerciseType = params.get('et')
+      ? (params.get('et') as any)
+      : (undefined as ExerciseType | undefined);
+    const multiplicationTable = params.get('mt')
+      ? (Number(params.get('mt')) as any)
+      : (undefined as number | undefined);
+    const additionToMultiplicationTable = params.get('amt')
+      ? (Number(params.get('amt')) as any)
+      : (undefined as number | undefined);
+
     setConfig({
       operation,
       numsDigits,
@@ -74,7 +86,10 @@ export default function PracticePage() {
         subtractionType,
         subtractionRangeValue,
       } as SubtractionSettings,
-      multiplicationSettings: {},
+      multiplicationSettings: {
+        multiplicationTable,
+        additionToMultiplicationTable,
+      } as MultiplicationSettings,
       divisionSettings: {},
       numTerms,
       timeType,
@@ -82,6 +97,7 @@ export default function PracticePage() {
       calculationType,
       inputDirectionType,
       rangeValue,
+      exerciseType,
     });
   }, [params]);
 
@@ -97,7 +113,7 @@ export default function PracticePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between px-4">
           <h1 className="text-2xl font-bold text-gray-900">Luyện tập</h1>
           <button

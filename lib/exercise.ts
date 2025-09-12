@@ -119,7 +119,6 @@ export function calculationOperatorAddAndSub(
   document.getElementById('result')!.focus();
 }
 
-
 export function checkAnswerMultiply(num1: number, num2: number) {
   var quanNum1 = quanNum(num1);
   var quanNum2 = quanNum(num2);
@@ -180,7 +179,11 @@ export function checkAnswerMultiply(num1: number, num2: number) {
       for (let j = quanResultMulti; j >= 1; j--) {
         // console.log(document.getElementById('inp_line_' + i + '_' + j).value);
         (arrTichRiengInp[i] as string[]).push(
-          (document.getElementById('inp_line_' + i + '_' + j) as HTMLInputElement).value
+          (
+            document.getElementById(
+              'inp_line_' + i + '_' + j
+            ) as HTMLInputElement
+          ).value
         );
       }
     }
@@ -191,7 +194,11 @@ export function checkAnswerMultiply(num1: number, num2: number) {
       for (let j = 1; j <= quanResultMulti; j++) {
         // console.log(document.getElementById('inp_line_' + i + '_' + j).value);
         (arrTichRiengInp[i] as string[]).push(
-          (document.getElementById('inp_line_' + i + '_' + j) as HTMLInputElement).value
+          (
+            document.getElementById(
+              'inp_line_' + i + '_' + j
+            ) as HTMLInputElement
+          ).value
         );
       }
       (arrTichRiengInp[i] as string[]).reverse();

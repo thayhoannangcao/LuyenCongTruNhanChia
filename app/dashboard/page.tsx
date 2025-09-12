@@ -10,7 +10,6 @@ export default function DashboardPage() {
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
 
-  // Hooks phải khai báo trước mọi return
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -126,6 +125,15 @@ export default function DashboardPage() {
               it: config.inputDirectionType
                 ? String(config.inputDirectionType)
                 : '',
+              et: config.exerciseType ? String(config.exerciseType) : '',
+              mt: config.multiplicationSettings.multiplicationTable
+                ? String(config.multiplicationSettings.multiplicationTable)
+                : '',
+              amt: config.multiplicationSettings.additionToMultiplicationTable
+                ? String(
+                    config.multiplicationSettings.additionToMultiplicationTable
+                  )
+                : '',
             });
             router.push(`/practice?${params.toString()}`);
           }}
@@ -134,5 +142,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-// http://localhost:3000/practice?operation=addition&ar=3&at=without_carry&arv=10&sr=1&st=without_carry&srv=10&nt=2&nums=1%2C1&rv=10&total=10&tt=false&tv=1&ct=true&it=rtl

@@ -29,6 +29,13 @@ export type SubtractionType = 'with_carry' | 'without_carry';
 // Loại đặt tính (ngang hoặc dọc)
 export type InputDirectionType = 'rtl' | 'ltr';
 
+export type ExerciseType =
+  | 'multi_multiplication_table'
+  | 'multi_addition_to_multiplication'
+  | 'multi_comparison'
+  | 'multi_find_unknown'
+  | 'multi_other';
+
 // Cấu hình bài tập phép cộng
 export interface AdditionSettings {
   additionRangeType: AdditionRangeType;
@@ -44,7 +51,10 @@ export interface SubtractionSettings {
 }
 
 // Cấu hình bài tập phép nhân
-export interface MultiplicationSettings {}
+export interface MultiplicationSettings {
+  multiplicationTable: number;
+  additionToMultiplicationTable: number;
+}
 
 // Cấu hình bài tập phép chia
 export interface DivisionSettings {}
@@ -56,6 +66,7 @@ export interface ExerciseConfig {
   subtractionSettings: SubtractionSettings;
   multiplicationSettings: MultiplicationSettings;
   divisionSettings: DivisionSettings;
+  exerciseType: ExerciseType;
   numTerms: number;
   numsDigits: number[];
   rangeValue: number;
@@ -78,6 +89,13 @@ export interface ExerciseResult {
 // Tạo số ngẫu nhiên theo max
 export function generateRandomNumberWithMax(max: number): number {
   return Math.floor(Math.random() * (max + 1));
+}
+
+export function generateRandomNumberWithMinAndMax(
+  min: number,
+  max: number
+): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Tạo số ngẫu nhiên với số chữ số cho trước
@@ -224,7 +242,7 @@ export function generateNumbersForAddition(
       randomSum -= nums[i];
     }
   } while (
-    (nums.length === 0) ||
+    nums.length === 0 ||
     Array.from(nums).some(
       (n) => n === null || n === undefined || n === 0 || isNaN(Number(n))
     ) ||
@@ -331,7 +349,7 @@ export function generateSubtractionExercise(
       }
     }
   } while (
-    (nums.length === 0) ||
+    nums.length === 0 ||
     Array.from(nums).some(
       (n) => n === null || n === undefined || n === 0 || isNaN(Number(n))
     ) ||
@@ -352,14 +370,57 @@ export function generateSubtractionExercise(
 export function generateMultiplicationExercise(
   config: ExerciseConfig
 ): ExerciseResult {
-  // const num1 = generateRandomNumber(config.num1Digits);
-  // const num2 = generateRandomNumber(config.num2Digits);
-  // const correctAnswer = num1 * num2;
-  // const question = `${num1} × ${num2}`;
+  let nums: number[] = [];
+  let correctAnswer = '';
+
+  const configExerciseType = config.exerciseType;
+
+  if (configExerciseType === 'multi_multiplication_table') {
+    nums[0] = config.multiplicationSettings.multiplicationTable;
+    nums[1] = generateRandomNumberWithMax(9);
+    correctAnswer = nums.reduce((a, b) => a * b).toString();
+  }
+
+  if (configExerciseType === 'multi_addition_to_multiplication') {
+    nums[0] = config.multiplicationSettings.additionToMultiplicationTable;
+    nums[1] = generateRandomNumberWithMinAndMax(2, 9);
+    correctAnswer = nums[1].toString();
+  }
+
+  if (configExerciseType === 'multi_comparison') {
+    nums[0] = generateRandomNumberWithMax(9);
+    nums[1] = generateRandomNumberWithMax(9);
+    nums[2] = generateRandomNumberWithMax(9);
+    nums[3] = generateRandomNumberWithMax(9);
+
+    if (nums[0] * nums[1] > nums[2] * nums[3]) {
+      correctAnswer = '>';
+    } else if (nums[0] * nums[1] < nums[2] * nums[3]) {
+      correctAnswer = '<';
+    } else {
+      correctAnswer = '=';
+    }
+  }
+
+  if (configExerciseType === 'multi_find_unknown') {
+    nums[0] = generateRandomNumberWithMax(9);
+    nums[1] = generateRandomNumberWithMax(9);
+    nums[2] = generateRandomNumberWithMax(9);
+    nums[3] = generateRandomNumberWithMax(9);
+    const randomIndex = generateRandomNumberWithMax(3);
+
+    correctAnswer = randomIndex.toString() + ',' + nums[randomIndex].toString();
+  }
+
+  if (configExerciseType === 'multi_other') {
+    nums[0] = generateRandomNumberWithMax(9);
+    nums[1] = generateRandomNumberWithMax(9);
+    correctAnswer = nums.reduce((a, b) => a * b).toString();
+  }
 
   return {
-    nums: [103, 21],
-    correctAnswer: '2163',
+    nums,
+    correctAnswer,
   };
 }
 
@@ -398,20 +459,20 @@ export function generateExerciseList(config: ExerciseConfig): ExerciseResult[] {
     let exercise: ExerciseResult;
 
     switch (config.operation) {
-      case "addition":
+      case 'addition':
         exercise = generateAdditionExercise(config);
         break;
-      case "subtraction":
+      case 'subtraction':
         exercise = generateSubtractionExercise(config);
         break;
-      case "multiplication":
+      case 'multiplication':
         exercise = generateMultiplicationExercise(config);
         break;
-      case "division":
+      case 'division':
         exercise = generateDivisionExercise(config);
         break;
       default:
-        throw new Error("Loại phép tính không hợp lệ");
+        throw new Error('Loại phép tính không hợp lệ');
     }
 
     const key = `${exercise.nums}`;

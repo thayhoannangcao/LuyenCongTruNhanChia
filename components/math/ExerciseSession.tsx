@@ -168,7 +168,7 @@ export default function ExerciseSession({
   const currentExercise = exercises[currentIndex];
 
   return (
-    <div className="flex h-[calc(100vh-130px)] gap-4 px-[200px] py-4">
+    <div className="flex h-[calc(100vh-130px)] gap-4 px-4 py-4 lg:px-[30px] 2xl:px-[100px] [@media(min-width:1800px)]:px-[200px]">
       <ScoreBoard
         currentQuestion={currentIndex + 1}
         totalQuestions={exercises.length}

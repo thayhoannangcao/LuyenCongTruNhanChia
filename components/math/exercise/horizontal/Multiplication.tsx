@@ -1,35 +1,22 @@
-import { ExerciseResult, ExerciseConfig } from '@/lib/math-generator';
-import { useState, useEffect, useRef } from 'react';
-import Multiplication from './horizontal/Multiplication';
+import { useEffect, useRef, useState } from 'react';
+import { calculationOperatorMultiply } from '@/lib/exercise';
+import { ExerciseConfig, ExerciseResult } from '@/lib/math-generator';
 
-interface HorizontalProps {
-  exercise: ExerciseResult;
-  onNext: () => void;
-  config: ExerciseConfig;
-  onAnswer: (isCorrect: boolean) => void;
-  timer: number;
-  setTimer: (timer: number) => void;
-  timerIdRef: React.MutableRefObject<number | null>;
-}
-
-export default function Horizontal({
+export default function Multiplication({
   exercise,
   onNext,
-  config,
-  onAnswer,
   timer,
-  setTimer,
+  config,
   timerIdRef,
-}: HorizontalProps) {
-  const operationText =
-    config.operation === 'addition'
-      ? '+'
-      : config.operation === 'subtraction'
-        ? '-'
-        : config.operation === 'multiplication'
-          ? 'x'
-          : '÷';
-
+  onAnswer,
+}: {
+  exercise: ExerciseResult;
+  onNext: () => void;
+  timer: number;
+  config: ExerciseConfig;
+  timerIdRef: React.MutableRefObject<number | null>;
+  onAnswer: (isCorrect: boolean) => void;
+}) {
   const [userAnswer, setUserAnswer] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -45,16 +32,6 @@ export default function Horizontal({
     }
   }, [exercise]);
 
-  useEffect(() => {
-    if (!showResult && timer != 0) {
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, 0);
-    }
-  }, [exercise, showResult, timer]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -68,11 +45,6 @@ export default function Horizontal({
       clearInterval(timerIdRef.current);
       timerIdRef.current = null;
     }
-
-    // if (!userAnswer.trim() && timer != 0) {
-    //   alert('Vui lòng nhập đáp án');
-    //   return;
-    // }
 
     if (timer == 0) {
       onNext();
@@ -89,27 +61,31 @@ export default function Horizontal({
 
   return (
     <div>
-      {(config.operation === 'addition' ||
-        config.operation === 'subtraction' ||
-        (config.operation === 'multiplication' &&
-          config.exerciseType === 'multi_multiplication_table')) && (
+      {config.exerciseType === 'multi_addition_to_multiplication' && (
         <div>
-          <div className="mb-8 text-center">
-            <div className="mb-4 text-4xl font-bold">
-              {exercise.nums.join(` ${operationText} `)} = ?
-            </div>
-
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                value={userAnswer}
-                ref={inputRef}
-                onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Nhập đáp án"
-                className="w-full rounded-md border border-gray-300 py-3 text-center text-2xl focus:outline-none focus:ring-2 focus:ring-primary-500"
-                autoFocus
-                readOnly={showResult || timer == 0}
-              />
+          <form onSubmit={handleSubmit}>
+            <div className="mb-8 text-center">
+              <div className="mb-4 flex items-center justify-center gap-3 text-4xl font-bold">
+                <div>
+                  {Array.from({ length: exercise.nums[1] })
+                    .map(() => exercise.nums[0])
+                    .join(' + ')}
+                </div>
+                <div className="text-4xl font-bold">=</div>
+                <div className="text-4xl font-bold">{exercise.nums[0]}</div>
+                <div className="text-4xl font-bold">x</div>
+                <div className="text-4xl font-bold">
+                  <input
+                    type="text"
+                    value={userAnswer}
+                    ref={inputRef}
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                    className="w-[70px] rounded-md border border-gray-300 py-3 text-center focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    autoFocus
+                    readOnly={showResult || timer == 0}
+                  />
+                </div>
+              </div>
 
               {(timer == 0 || isNextExercise) && (
                 <button
@@ -129,8 +105,8 @@ export default function Horizontal({
                   Kiểm tra
                 </button>
               )}
-            </form>
-          </div>
+            </div>
+          </form>
 
           {showResult && (
             <div
@@ -161,20 +137,6 @@ export default function Horizontal({
           )}
         </div>
       )}
-
-      {config.operation === 'multiplication' &&
-        config.exerciseType === 'multi_addition_to_multiplication' && (
-          <div>
-            <Multiplication
-              exercise={exercise}
-              onNext={onNext}
-              timer={timer}
-              config={config}
-              timerIdRef={timerIdRef}
-              onAnswer={onAnswer}
-            />
-          </div>
-        )}
     </div>
   );
 }
