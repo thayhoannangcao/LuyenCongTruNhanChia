@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { USERNAME_EMAIL_SUFFIX } from '@/lib/constants';
+import { USERNAME_EMAIL_SUFFIX } from '@/src/constants/base.constants';
 
 // NOTE: Các route này dựa vào RLS + service role. Triển khai đơn giản.
 
