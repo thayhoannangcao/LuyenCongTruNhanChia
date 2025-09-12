@@ -50,99 +50,97 @@ export default function DashboardPage() {
   }
 
   return (
-    <div>
-      <Button>Click me</Button>
-    </div>
-    // <div className="min-h-screen bg-gray-50 py-8">
-    //   <div className="container mx-auto px-4">
-    //     <div className="mb-8 flex items-center justify-between">
-    //       <div>
-    //         <h1 className="text-3xl font-bold text-gray-900">
-    //           Chào mừng, {user.full_name}!
-    //         </h1>
-    //         <p className="text-gray-600">Chọn bài tập để bắt đầu luyện tập</p>
-    //       </div>
-    //       <div className="relative" ref={menuRef}>
-    //         <button
-    //           className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 font-semibold text-white shadow hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-    //           onClick={() => setMenuOpen((v) => !v)}
-    //           aria-haspopup="menu"
-    //           aria-expanded={menuOpen}
-    //         >
-    //           {userInitials}
-    //         </button>
-    //         {menuOpen && (
-    //           <div className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-md border bg-white shadow-lg">
-    //             <button
-    //               className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
-    //               onClick={() => {
-    //                 setMenuOpen(false);
-    //                 router.push(ROUTE_CHANGE_PASSWORD);
-    //               }}
-    //             >
-    //               Đổi mật khẩu
-    //             </button>
-    //             <div className="h-px bg-gray-100" />
-    //             <button
-    //               className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-50"
-    //               onClick={() => {
-    //                 setMenuOpen(false);
-    //                 signOut();
-    //               }}
-    //             >
-    //               Đăng xuất
-    //             </button>
-    //           </div>
-    //         )}
-    //       </div>
-    //     </div>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="container mx-auto px-4">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Chào mừng, {user.full_name}!
+            </h1>
+            <p className="text-gray-600">Chọn bài tập để bắt đầu luyện tập</p>
+          </div>
+          <div className="relative" ref={menuRef}>
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 font-semibold text-white shadow hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+            >
+              {userInitials}
+            </button>
+            {menuOpen && (
+              <div className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-md border bg-white shadow-lg">
+                <Button
+                  title="Đổi mật khẩu"
+                  className="text-primary w-full bg-white hover:bg-gray-50"
+                  variant="main"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    router.push(ROUTE_CHANGE_PASSWORD);
+                  }}
+                />
 
-    //     <ExerciseSettings
-    //       onStart={(config) => {
-    //         const params = new URLSearchParams({
-    //           operation: config.operation,
-    //           ar: config.additionSettings.additionRangeType
-    //             ? String(config.additionSettings.additionRangeType)
-    //             : '',
-    //           at: config.additionSettings.additionType
-    //             ? String(config.additionSettings.additionType)
-    //             : '',
-    //           arv: config.additionSettings.additionRangeValue
-    //             ? String(config.additionSettings.additionRangeValue)
-    //             : '',
-    //           sr: config.subtractionSettings.subtractionRangeType
-    //             ? String(config.subtractionSettings.subtractionRangeType)
-    //             : '',
-    //           st: config.subtractionSettings.subtractionType
-    //             ? String(config.subtractionSettings.subtractionType)
-    //             : '',
-    //           srv: config.subtractionSettings.subtractionRangeValue
-    //             ? String(config.subtractionSettings.subtractionRangeValue)
-    //             : '',
-    //           nt: String(config.numTerms),
-    //           nums: String(config.numsDigits),
-    //           rv: String(config.rangeValue),
-    //           total: String(config.totalQuestions),
-    //           tt: config.timeType ? String(config.timeType) : '',
-    //           tv: config.timeValue ? String(config.timeValue) : '',
-    //           ct: config.calculationType ? String(config.calculationType) : '',
-    //           it: config.inputDirectionType
-    //             ? String(config.inputDirectionType)
-    //             : '',
-    //           et: config.exerciseType ? String(config.exerciseType) : '',
-    //           mt: config.multiplicationSettings.multiplicationTable
-    //             ? String(config.multiplicationSettings.multiplicationTable)
-    //             : '',
-    //           amt: config.multiplicationSettings.additionToMultiplicationTable
-    //             ? String(
-    //                 config.multiplicationSettings.additionToMultiplicationTable
-    //               )
-    //             : '',
-    //         });
-    //         router.push(`/practice?${params.toString()}`);
-    //       }}
-    //     />
-    //   </div>
-    // </div>
+                <div className="h-px bg-gray-100" />
+                <Button
+                  className="w-full bg-white text-red-600 hover:bg-gray-50"
+                  title="Đăng xuất"
+                  variant="default"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    signOut();
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <ExerciseSettings
+          onStart={(config) => {
+            const params = new URLSearchParams({
+              operation: config.operation,
+              ar: config.additionSettings.additionRangeType
+                ? String(config.additionSettings.additionRangeType)
+                : '',
+              at: config.additionSettings.additionType
+                ? String(config.additionSettings.additionType)
+                : '',
+              arv: config.additionSettings.additionRangeValue
+                ? String(config.additionSettings.additionRangeValue)
+                : '',
+              sr: config.subtractionSettings.subtractionRangeType
+                ? String(config.subtractionSettings.subtractionRangeType)
+                : '',
+              st: config.subtractionSettings.subtractionType
+                ? String(config.subtractionSettings.subtractionType)
+                : '',
+              srv: config.subtractionSettings.subtractionRangeValue
+                ? String(config.subtractionSettings.subtractionRangeValue)
+                : '',
+              nt: String(config.numTerms),
+              nums: String(config.numsDigits),
+              rv: String(config.rangeValue),
+              total: String(config.totalQuestions),
+              tt: config.timeType ? String(config.timeType) : '',
+              tv: config.timeValue ? String(config.timeValue) : '',
+              ct: config.calculationType ? String(config.calculationType) : '',
+              it: config.inputDirectionType
+                ? String(config.inputDirectionType)
+                : '',
+              et: config.exerciseType ? String(config.exerciseType) : '',
+              mt: config.multiplicationSettings.multiplicationTable
+                ? String(config.multiplicationSettings.multiplicationTable)
+                : '',
+              amt: config.multiplicationSettings.additionToMultiplicationTable
+                ? String(
+                    config.multiplicationSettings.additionToMultiplicationTable
+                  )
+                : '',
+            });
+            router.push(`/practice?${params.toString()}`);
+          }}
+        />
+      </div>
+    </div>
   );
 }

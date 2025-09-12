@@ -51,7 +51,7 @@ const Button = forwardRef<HTMLButtonElement, Readonly<IButtonProps>>(
     <ButtonBase
       ref={ref}
       type={type}
-      className={clsx('rounded-[5px] text-center font-medium', className)}
+      className={clsx('text-center font-medium', className)}
       size={size}
       onClick={onClick}
       disabled={disable || loading}

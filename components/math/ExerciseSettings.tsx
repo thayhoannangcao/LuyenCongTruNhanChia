@@ -17,6 +17,7 @@ import {
 } from '@/lib/math-generator';
 import SubSettings from './settings/SubSettings';
 import MultiSettings from './settings/MultiSettings';
+import Button from '@/src/components/Button/Button';
 
 interface ExerciseSettingsProps {
   onStart: (config: ExerciseConfig) => void;
@@ -497,12 +498,13 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
           </div>
         </div>
 
-        <button
+        <Button
+          title="Bắt đầu"
+          className="w-full"
+          variant="main"
+          size="lg"
           type="submit"
-          className="w-full rounded-md bg-primary-600 px-4 py-2 font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-        >
-          Bắt đầu
-        </button>
+        />
       </form>
     </div>
   );

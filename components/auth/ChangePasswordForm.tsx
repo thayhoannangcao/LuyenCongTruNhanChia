@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/ToastProvider';
 import { changePassword } from '@/src/utils/auth';
 import type { ChangePasswordPayload } from '@/src/types/types';
+import Button from '@/src/components/Button/Button';
 
 export default function ChangePasswordForm() {
   const router = useRouter();
@@ -227,13 +228,13 @@ export default function ChangePasswordForm() {
           </span>
         </label>
 
-        <button
+        <Button
+          title={loading ? 'Đang xử lý...' : 'Đổi mật khẩu'}
           type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-60"
-        >
-          {loading ? 'Đang xử lý...' : 'Đổi mật khẩu'}
-        </button>
+          disable={loading}
+          className="w-full"
+          variant="main"
+        />
 
         {error && (
           <div className="text-center text-sm text-red-600">{error}</div>

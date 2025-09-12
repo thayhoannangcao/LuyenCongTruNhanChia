@@ -1,6 +1,7 @@
 import { ExerciseResult, ExerciseConfig } from '@/lib/math-generator';
 import { useState, useEffect, useRef } from 'react';
 import Multiplication from './horizontal/Multiplication';
+import Button from '@/src/components/Button/Button';
 
 interface HorizontalProps {
   exercise: ExerciseResult;
@@ -112,22 +113,24 @@ export default function Horizontal({
               />
 
               {(timer == 0 || isNextExercise) && (
-                <button
+                <Button
+                  title="Câu tiếp theo"
+                  variant="main"
+                  size="lg"
                   type="button"
                   onClick={onNext}
-                  className="mt-4 w-full rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                  Câu tiếp theo
-                </button>
+                  className="mt-4 w-full"
+                />
               )}
 
               {timer != 0 && !isNextExercise && (
-                <button
+                <Button
+                  title="Kiểm tra"
+                  variant="main"
+                  size="lg"
                   type="submit"
-                  className="mt-4 w-full rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                  Kiểm tra
-                </button>
+                  className="mt-4 w-full"
+                />
               )}
             </form>
           </div>
