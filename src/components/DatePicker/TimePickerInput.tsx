@@ -5,7 +5,7 @@ import {
   getDateByType,
   setDateByType,
 } from './time-picker-utils';
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 
 export interface TimePickerInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -88,7 +88,7 @@ const TimePickerInput = ({
       id={id || picker}
       name={name || picker}
       className={cn(
-        'border-neutral-gray-light w-[48px] rounded-[3px] border text-center font-mono text-sm tabular-nums caret-transparent focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none',
+        'border-neutral-gray-light focus:bg-accent focus:text-accent-foreground w-[48px] rounded-[3px] border text-center font-mono text-sm tabular-nums caret-transparent [&::-webkit-inner-spin-button]:appearance-none',
         className
       )}
       value={value || calculatedValue}

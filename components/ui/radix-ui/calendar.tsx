@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DayPicker } from 'react-day-picker';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 import { buttonVariants } from '@/components/ui/button';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';

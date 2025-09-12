@@ -4,7 +4,7 @@ import {
   AvatarImage,
 } from '@/components/ui/radix-ui/avatar';
 import { Skeleton } from '@/components/ui/radix-ui/skeleton';
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 import Image from 'next/image';
 
 type AvatarVariant = 'circle' | 'square' | 'rounded';

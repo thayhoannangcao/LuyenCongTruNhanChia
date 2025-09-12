@@ -1,72 +1,81 @@
-'use client'
+'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import type { AuthUser } from '@/lib/auth'
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import type { AuthUser } from '@/src/utils/auth';
 
 interface AuthContextType {
-  user: AuthUser | null
-  loading: boolean
-  signOut: () => Promise<void>
+  user: AuthUser | null;
+  loading: boolean;
+  signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     // Lấy user hiện tại khi component mount
-    getCurrentUser()
+    getCurrentUser();
 
     // Lắng nghe thay đổi auth state
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          await getCurrentUser()
-        } else {
-          setUser(null)
-        }
-        setLoading(false)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        await getCurrentUser();
+      } else {
+        setUser(null);
       }
-    )
+      setLoading(false);
+    });
 
-    return () => subscription.unsubscribe()
-  }, [])
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Theo dõi single-session: nếu current_client_id thay đổi khác client hiện tại -> sign out
   useEffect(() => {
-    if (!user) return
-    const clientId = getClientId()
+    if (!user) return;
+    const clientId = getClientId();
     const channel = supabase
       .channel('user-single-session')
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'users',
-        filter: `id=eq.${user.id}`,
-      }, (payload: any) => {
-        const newClient = (payload.new as any)?.current_client_id
-        if (newClient && newClient !== clientId) {
-          supabase.auth.signOut()
-          setUser(null)
-          router.replace('/auth/login')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'users',
+          filter: `id=eq.${user.id}`,
+        },
+        (payload: any) => {
+          const newClient = (payload.new as any)?.current_client_id;
+          if (newClient && newClient !== clientId) {
+            supabase.auth.signOut();
+            setUser(null);
+            router.replace('/auth/login');
+          }
         }
-      })
-      .subscribe()
-    return () => { supabase.removeChannel(channel) }
-  }, [user])
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   const getCurrentUser = async () => {
     try {
-      const { data: { user: authUser }, error } = await supabase.auth.getUser()
-      
+      const {
+        data: { user: authUser },
+        error,
+      } = await supabase.auth.getUser();
+
       if (error || !authUser) {
-        setUser(null)
-        return
+        setUser(null);
+        return;
       }
 
       // Lấy thông tin profile từ bảng users
@@ -74,11 +83,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .from('users')
         .select('id, username, full_name, role')
         .eq('id', authUser.id)
-        .single()
+        .single();
 
       if (profileError || !profile) {
-        setUser(null)
-        return
+        setUser(null);
+        return;
       }
 
       setUser({
@@ -86,47 +95,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         username: profile.username,
         full_name: profile.full_name,
         role: profile.role || (profile.username === 'admin' ? 'admin' : 'user'),
-      })
+      });
     } catch (error) {
-      console.error('Error getting current user:', error)
-      setUser(null)
+      console.error('Error getting current user:', error);
+      setUser(null);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut()
-      setUser(null)
-      router.replace('/auth/login')
+      await supabase.auth.signOut();
+      setUser(null);
+      router.replace('/auth/login');
     } catch (error) {
-      console.error('Error signing out:', error)
+      console.error('Error signing out:', error);
     }
-  }
+  };
 
   const value = {
     user,
     loading,
     signOut,
-  }
+  };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 function getClientId(): string | null {
-  if (typeof window === 'undefined') return null
-  return window.localStorage.getItem('app_client_id')
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem('app_client_id');
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
+  return context;
 }

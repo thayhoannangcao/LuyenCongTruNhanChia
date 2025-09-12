@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 import {
   LIMIT_SELECT_OPTIONS,
   MAX_INPUT_LENGTH,
@@ -177,7 +177,7 @@ export function ComboboxInput({
       return (
         <div
           className={clsx(
-            'flex flex-1 flex-wrap justify-start gap-1 text-text-primary',
+            'text-text-primary flex flex-1 flex-wrap justify-start gap-1',
             showClear ? 'w-[calc(100%-3rem)]' : 'w-[calc(100%-1rem)]'
           )}
         >
@@ -207,7 +207,7 @@ export function ComboboxInput({
   const renderTagValue = () => {
     if (!valueExternal?.length && !currentValues?.length) {
       return open && hidePlaceholderOnFocus ? null : (
-        <div className="truncate text-text-disabled">{placeholder}</div>
+        <div className="text-text-disabled truncate">{placeholder}</div>
       );
     }
     return (
@@ -292,7 +292,7 @@ export function ComboboxInput({
             role="combobox"
             aria-expanded={open}
             className={clsx(
-              'custom-border box-border flex w-full justify-between rounded-lg bg-other [&[data-state=open]]:border-action-active [&_svg]:size-4',
+              'custom-border bg-other [&[data-state=open]]:border-action-active box-border flex w-full justify-between rounded-lg [&_svg]:size-4',
               inputSize === 'lg' && 'h-[52px]',
               inputSize === 'sm' &&
                 `${mode === 'multiple' ? 'min-h-8' : 'h-8'} py-1`,
@@ -304,7 +304,7 @@ export function ComboboxInput({
             <div className="flex w-full items-center justify-between gap-1.5">
               <div
                 className={clsx(
-                  'flex-1 text-start text-text-primary',
+                  'text-text-primary flex-1 text-start',
                   showClear ? 'max-w-[80%]' : 'max-w-[90%]'
                 )}
               >
@@ -332,7 +332,7 @@ export function ComboboxInput({
                   )}
                 <div
                   className={clsx(
-                    'text-center align-middle text-text-secondary',
+                    'text-text-secondary text-center align-middle',
                     open && 'rotate-180'
                   )}
                 >
@@ -361,7 +361,7 @@ export function ComboboxInput({
                   placeholder={placeholderSearch}
                 />
                 {searchValueError && (
-                  <div className="mx-2 my-2 text-xs font-normal text-error">
+                  <div className="text-error mx-2 my-2 text-xs font-normal">
                     {searchValueError}
                   </div>
                 )}
@@ -371,7 +371,7 @@ export function ComboboxInput({
               onScroll={handleScroll}
               ref={containerRef}
               onWheel={(e) => e.stopPropagation()}
-              className="border-red-500 max-h-[300px] overflow-y-auto overflow-x-hidden border"
+              className="max-h-[300px] overflow-y-auto overflow-x-hidden border border-red-500"
             >
               {addonItem && (
                 <div
@@ -417,14 +417,14 @@ export function ComboboxInput({
                             }
                             setOpen(false);
                           }}
-                          className="flex items-center justify-between text-text-primary"
+                          className="text-text-primary flex items-center justify-between"
                         >
                           <div className="min-w-0 flex-1 truncate whitespace-pre">
                             <TruncateText
                               text={option.displayValue || option.label}
                               TooltipProps={{
                                 children: (
-                                  <div className="break-words bg-secondary-light px-2 py-1 text-sm text-white">
+                                  <div className="bg-secondary-light break-words px-2 py-1 text-sm text-white">
                                     {option.displayValue || option.label}
                                   </div>
                                 ),
@@ -434,7 +434,7 @@ export function ComboboxInput({
                           {values?.includes(option.value) && (
                             <Check
                               className={cn(
-                                'ml-2 h-5 w-5 shrink-0 text-text-primary',
+                                'text-text-primary ml-2 h-5 w-5 shrink-0',
                                 values?.includes(option.value)
                                   ? 'opacity-100'
                                   : 'opacity-0'

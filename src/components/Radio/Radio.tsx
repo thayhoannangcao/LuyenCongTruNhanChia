@@ -4,7 +4,7 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from '@/components/ui/radix-ui/radio-group';
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import FormLabel from '../common/FormLabel';

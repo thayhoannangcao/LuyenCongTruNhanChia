@@ -1,7 +1,7 @@
 import { supabase } from './supabase';
 import { USERNAME_EMAIL_SUFFIX } from '@/src/constants/base.constants';
 import { supabaseLite } from './supabase-lite';
-import type { ChangePasswordPayload } from './types';
+import type { ChangePasswordPayload } from '@/src/types/types';
 import { withTimeout } from './utils';
 
 export interface AuthUser {

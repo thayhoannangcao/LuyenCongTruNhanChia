@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn, signUp, type SignInData, type SignUpData } from '@/lib/auth'
+import { signIn, signUp, type SignInData, type SignUpData } from '@/src/utils/auth'
 import { useToast } from '@/components/ui/ToastProvider'
 
 interface AuthFormProps {

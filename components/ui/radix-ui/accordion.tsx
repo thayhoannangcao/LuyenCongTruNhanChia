@@ -2,7 +2,7 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown, CircleHelp, X } from 'lucide-react';
 import * as React from 'react';
 import { IoCaretDownOutline } from 'react-icons/io5';
-import { cn } from '~/lib/utils';
+import { cn } from '@/src/utils/utils';
 
 export type RoleAccordionType =
   | 'section'
@@ -23,7 +23,7 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={cn('rounded-[10px] border border-outline-border', className)}
+    className={cn('border-outline-border rounded-[10px] border', className)}
     {...props}
   />
 ));
@@ -71,9 +71,9 @@ const AccordionTrigger = React.forwardRef<
       <AccordionPrimitive.Trigger
         ref={ref}
         className={cn(
-          'flex flex-1 items-center justify-between text-text-primary outline-none transition-all [&[data-state=open]>div:nth-of-type(2)>svg]:rotate-180 [&[data-state=open]]:text-primary',
+          'text-text-primary [&[data-state=open]]:text-primary flex flex-1 items-center justify-between outline-none transition-all [&[data-state=open]>div:nth-of-type(2)>svg]:rotate-180',
           role === 'section' &&
-            'flex-row-reverse justify-end gap-2 [&[data-state=open]>div:nth-of-type(2)>svg]:text-primary',
+            '[&[data-state=open]>div:nth-of-type(2)>svg]:text-primary flex-row-reverse justify-end gap-2',
           role === 'label' && '[&[data-state=open]]:text-text-primary',
           role === 'item' &&
             '[&[data-state=open]>div:nth-of-type(2)>svg]:text-primary',
@@ -84,7 +84,7 @@ const AccordionTrigger = React.forwardRef<
             role !== 'default' &&
             role !== 'label' &&
             role !== 'card' &&
-            'p-3 hover:bg-action-hover'
+            'hover:bg-action-hover p-3'
         )}
         {...props}
       >
@@ -92,7 +92,7 @@ const AccordionTrigger = React.forwardRef<
           className={cn(
             'flex w-[calc(100%-75px)] items-center gap-1 text-base font-medium leading-[28px]',
             (role === 'default' || role === 'menu-bar' || role === 'card') &&
-              'text-[20px] font-bold text-text-primary',
+              'text-text-primary text-[20px] font-bold',
             role === 'menu-bar' && 'text-base font-normal',
             className
           )}
@@ -111,7 +111,7 @@ const AccordionTrigger = React.forwardRef<
         </div>
         <div className="flex items-center gap-2">
           {!!numberOfValue && (
-            <div className="flex items-center gap-1 rounded-lg border border-outline-border px-2 text-sm text-text-primary">
+            <div className="border-outline-border text-text-primary flex items-center gap-1 rounded-lg border px-2 text-sm">
               <span className="flex-1">{numberOfValue}</span>
               <span
                 className="cursor-pointer text-[10px] transition-opacity hover:opacity-50"
@@ -132,7 +132,7 @@ const AccordionTrigger = React.forwardRef<
           {arrowIconType === 'caret' && (
             <IoCaretDownOutline
               className={cn(
-                'h-4 w-4 text-text-disabled transition-transform duration-200',
+                'text-text-disabled h-4 w-4 transition-transform duration-200',
                 role === 'radio-content' && 'hidden',
                 (role === 'default' ||
                   role === 'menu-bar' ||
@@ -144,7 +144,7 @@ const AccordionTrigger = React.forwardRef<
           {arrowIconType === 'chevron' && (
             <ChevronDown
               className={cn(
-                'h-4 w-4 text-text-disabled transition-transform duration-200',
+                'text-text-disabled h-4 w-4 transition-transform duration-200',
                 role === 'radio-content' && 'hidden',
                 (role === 'default' ||
                   role === 'menu-bar' ||
@@ -169,7 +169,7 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm"
     {...props}
   >
     <div className={className}>{children}</div>

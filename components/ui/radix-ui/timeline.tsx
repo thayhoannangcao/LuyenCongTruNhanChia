@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 import clsx from 'clsx';
 
 interface TimelineItemProps extends React.LiHTMLAttributes<HTMLLIElement> {
@@ -35,7 +35,7 @@ const TimelineConnector = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'absolute left-[40px] top-7 flex h-[calc(100%-32px)] w-[3px] flex-grow rounded-[20px] bg-body-background',
+      'bg-body-background absolute left-[40px] top-7 flex h-[calc(100%-32px)] w-[3px] flex-grow rounded-[20px]',
       active && 'bg-primary',
       classNameConnector
     )}
@@ -81,7 +81,7 @@ const TimelineIcon = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'flex items-center rounded-full text-text-secondary',
+      'text-text-secondary flex items-center rounded-full',
       active && 'text-primary',
       disabled && 'text-text-disabled',
       classNameIcon

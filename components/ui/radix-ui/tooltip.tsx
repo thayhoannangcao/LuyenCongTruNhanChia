@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { cn } from '~/lib/utils';
+import { cn } from '@/src/utils/utils';
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
@@ -18,7 +18,7 @@ const TooltipContent = React.forwardRef<
       onWheel={(e) => e.stopPropagation()}
       sideOffset={sideOffset}
       className={cn(
-        'text-primary-foreground z-50 rounded-md bg-primary px-3 py-1.5 text-xs fade-in-0 zoom-in-95 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+        'text-primary-foreground bg-primary fade-in-0 zoom-in-95 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 rounded-md px-3 py-1.5 text-xs',
         className
       )}
       {...props}

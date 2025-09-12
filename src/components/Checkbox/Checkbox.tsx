@@ -1,5 +1,5 @@
 import { Checkbox as CheckboxInput } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
+import { cn } from '@/src/utils/utils';
 import type { InputSize } from '@/src/types/app';
 import { clsx } from 'clsx';
 import type { ReactNode } from 'react';
@@ -53,7 +53,7 @@ const Checkbox = ({
               label={label}
               htmlFor={value}
               className={cn(
-                '!mb-0 cursor-pointer text-text-primary text-opacity-[0.87]',
+                'text-text-primary !mb-0 cursor-pointer text-opacity-[0.87]',
                 disabled && 'text-link-water',
                 error && 'text-error',
                 classNameLabel
@@ -63,7 +63,7 @@ const Checkbox = ({
           {subLabel && (
             <p
               className={cn(
-                'text-xs leading-5 tracking-wide text-raven',
+                'text-raven text-xs leading-5 tracking-wide',
                 disabled && 'text-link-water'
               )}
             >
@@ -73,7 +73,7 @@ const Checkbox = ({
         </div>
       </div>
 
-      {error && <p className="mt-1 text-xs font-normal text-error">{error}</p>}
+      {error && <p className="text-error mt-1 text-xs font-normal">{error}</p>}
     </div>
   );
 };

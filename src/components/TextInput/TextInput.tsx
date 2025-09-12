@@ -1,4 +1,4 @@
-import type { InputSize } from '@/lib/types';
+import type { InputSize } from '@/src/types/types';
 import clsx from 'clsx';
 import { forwardRef, type ReactNode } from 'react';
 import { LuX } from 'react-icons/lu';
