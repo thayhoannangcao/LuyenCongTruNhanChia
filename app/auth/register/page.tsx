@@ -1,6 +1,6 @@
 'use client';
 
-import AuthForm from '@/components/auth/AuthForm';
+import AuthForm from '@/src/views/auth/components/AuthForm';
 import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {

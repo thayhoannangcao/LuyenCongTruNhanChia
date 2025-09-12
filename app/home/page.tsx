@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/components/auth/AuthProvider';
+import { useAuth } from '@/components/layouts/AuthProvider';
 import Button from '@/src/components/Button/Button';
 
 export default function HomePage() {

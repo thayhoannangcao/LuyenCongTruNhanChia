@@ -1,7 +1,7 @@
 'use client';
 
-import ChangePasswordForm from '@/components/auth/ChangePasswordForm';
-import { useAuth } from '@/components/auth/AuthProvider';
+import ChangePasswordForm from '@/src/views/auth/components/ChangePasswordForm';
+import { useAuth } from '@/components/layouts/AuthProvider';
 import { useRouter } from 'next/navigation';
 import Button from '@/src/components/Button/Button';
 
