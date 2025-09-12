@@ -10,8 +10,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@/components/ui/radix-ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/radix-ui/skeleton';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { Fragment } from 'react';
@@ -65,7 +65,10 @@ const DropDownMenu = ({
   loading = false,
 }: DropDownMenuProps) => {
   return (
-    <DropdownMenu open={open} onOpenChange={(open) => !open && onClose?.()}>
+    <DropdownMenu
+      open={open}
+      onOpenChange={(open: boolean) => !open && onClose?.()}
+    >
       {trigger && (
         <DropdownMenuTrigger
           className={classNameTrigger}
@@ -118,7 +121,7 @@ const DropDownMenu = ({
                   </DropdownMenuSub>
                 ) : (
                   <DropdownMenuItem
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                       itemPreventDefault && e.preventDefault();
                       e.stopPropagation();
                       item.action?.();

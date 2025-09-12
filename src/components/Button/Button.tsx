@@ -1,4 +1,4 @@
-import { Button as ButtonBase } from '@/components/ui/button';
+import { Button as ButtonBase } from '@/components/ui/radix-ui/button';
 import { clsx } from 'clsx';
 import { forwardRef, type ReactNode } from 'react';
 import LoadingIcon from '../common/LoadingIcon';

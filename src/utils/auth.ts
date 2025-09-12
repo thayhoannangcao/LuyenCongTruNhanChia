@@ -1,8 +1,8 @@
-import { supabase } from './supabase';
+import { supabase } from '@/lib/supabase';
 import { USERNAME_EMAIL_SUFFIX } from '@/src/constants/base.constants';
-import { supabaseLite } from './supabase-lite';
+import { supabaseLite } from '@/lib/supabase-lite';
 import type { ChangePasswordPayload } from '@/src/types/types';
-import { withTimeout } from './utils';
+import { withTimeout } from '@/src/utils/utils';
 
 export interface AuthUser {
   id: string;
@@ -22,14 +22,10 @@ export interface SignInData {
   password: string;
 }
 
-// Đăng ký tài khoản mới
 export async function signUp(data: SignUpData) {
   try {
-    // Tạo email giả từ username để Supabase Auth chấp nhận
-    // Sử dụng email thật hoặc domain được chấp nhận
     const fakeEmail = `${data.username}${USERNAME_EMAIL_SUFFIX}`;
 
-    // Tạo user trong Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: fakeEmail,
       password: data.password,
@@ -42,7 +38,6 @@ export async function signUp(data: SignUpData) {
     });
 
     if (authError) {
-      // Xử lý lỗi email đã tồn tại
       if (authError.message.includes('already registered')) {
         throw new Error('Tài khoản này đã tồn tại');
       }
@@ -53,7 +48,6 @@ export async function signUp(data: SignUpData) {
       throw new Error('Không thể tạo tài khoản');
     }
 
-    // Tạo profile trong bảng users
     const { error: profileError } = await supabase.from('users').insert({
       id: authData.user.id,
       username: data.username,
@@ -73,11 +67,8 @@ export async function signUp(data: SignUpData) {
   }
 }
 
-// Đăng nhập
 export async function signIn(data: SignInData) {
   try {
-    // Tạo email giả từ username để đăng nhập
-    // Sử dụng email thật hoặc domain được chấp nhận
     const fakeEmail = `${data.username}${USERNAME_EMAIL_SUFFIX}`;
 
     const { data: authData, error } = await supabase.auth.signInWithPassword({
@@ -86,7 +77,6 @@ export async function signIn(data: SignInData) {
     });
 
     if (error) {
-      // Xử lý lỗi đăng nhập
       if (error.message.includes('Invalid login credentials')) {
         throw new Error('Tài khoản hoặc mật khẩu không đúng');
       }
@@ -97,7 +87,6 @@ export async function signIn(data: SignInData) {
       throw new Error('Đăng nhập thất bại');
     }
 
-    // Lấy/ghi thông tin profile + single-session
     const clientId = getOrCreateClientId();
     const { data: profile, error: profileError } = await supabase
       .from('users')
@@ -138,7 +127,6 @@ function getOrCreateClientId(): string {
   return id;
 }
 
-// Đăng xuất
 export async function signOut() {
   try {
     const { error } = await supabase.auth.signOut();
@@ -154,7 +142,6 @@ export async function signOut() {
   }
 }
 
-// Lấy user hiện tại
 export async function getCurrentUser() {
   try {
     const {
@@ -187,10 +174,8 @@ export async function getCurrentUser() {
   }
 }
 
-// Đổi mật khẩu: xác thực lại bằng username + mật khẩu cũ, sau đó update mật khẩu mới
 export async function changePassword(payload: ChangePasswordPayload) {
   try {
-    // 1) Kiểm tra phiên đăng nhập hiện tại (dùng getUser trước cho nhanh)
     const { data: userData, error: userErr } = await withTimeout(
       supabase.auth.getUser(),
       8000,
@@ -199,7 +184,6 @@ export async function changePassword(payload: ChangePasswordPayload) {
     if (userErr || !userData?.user) {
       throw new Error('Bạn cần đăng nhập trước khi đổi mật khẩu');
     }
-    // Lấy session (có thể chậm), nếu không có thì thử refresh
     let { data: sessionData } = await supabase.auth.getSession();
     if (!sessionData?.session) {
       const { data: refreshed } = await supabase.auth.refreshSession();
@@ -209,7 +193,6 @@ export async function changePassword(payload: ChangePasswordPayload) {
       throw new Error('Không thể kiểm tra phiên đăng nhập');
     }
 
-    // 2) Xác thực mật khẩu hiện tại bằng client không persist session
     const username = (sessionData.session.user.user_metadata as any)?.username;
     if (!username) {
       throw new Error('Không tìm thấy username trong hồ sơ người dùng');
@@ -227,7 +210,6 @@ export async function changePassword(payload: ChangePasswordPayload) {
       throw new Error('Mật khẩu hiện tại không đúng');
     }
 
-    // 3) Cập nhật mật khẩu mới bằng REST để tránh treo do SDK
     const accessToken = sessionData.session.access_token;
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -252,7 +234,6 @@ export async function changePassword(payload: ChangePasswordPayload) {
       );
     }
 
-    // 4) Đăng xuất để người dùng đăng nhập lại bằng mật khẩu mới (tuỳ chọn)
     if (payload.signOutAfter) {
       await withTimeout(
         supabase.auth.signOut(),
@@ -260,8 +241,6 @@ export async function changePassword(payload: ChangePasswordPayload) {
         'Đăng xuất quá thời gian'
       );
     }
-
-    // Không log signOut để tránh noise
 
     return { success: true };
   } catch (error) {

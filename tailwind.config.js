@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: ['class'],
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -9,13 +10,72 @@ module.exports = {
     extend: {
       colors: {
         primary: {
+          DEFAULT: '#5877F2',
+          light: '#7692FF',
+          dark: '#2F51D7',
+          'contained-hover': '#4B6EFA',
+          'outlined-hover': 'rgba(88, 119, 242, 0.08)',
+          'outlined-resting': 'rgba(88, 119, 242, 0.5)',
+          surface: 'rgba(88, 119, 242, 0.2)',
           50: '#eff6ff',
           500: '#3b82f6',
           600: '#2563eb',
           700: '#1d4ed8',
-        }
-      }
+        },
+        secondary: {
+          DEFAULT: '#121831',
+          light: '#303A64',
+          default: '#E8E8E8',
+          'default-hover': '#CDCDCD',
+          dark: '#050711',
+          'contained-hover': '#4B6EFA',
+          'outlined-hover': 'rgba(88, 119, 242, 0.08)',
+          'outlined-resting': 'rgba(88, 119, 242, 0.5)',
+          hover: '#B5B4B4',
+        },
+        info: {
+          DEFAULT: '#16B1FF',
+          light: '#32BAFF',
+          dark: '#0E71A3',
+          'contained-hover': '#139CE0',
+          'outlined-hover': 'rgba(50, 186, 255, 0.08)',
+          'outlined-resting': 'rgba(50, 186, 255, 0.5)',
+        },
+        success: {
+          DEFAULT: '#56CA00',
+          light: '#47E797',
+          main: '#3DCC85',
+          dark: '#3ABD7C',
+          'contained-hover': '#4CB200',
+        },
+        warning: {
+          DEFAULT: '#FFB400',
+          light: '#FFB547',
+          dark: '#A37300',
+          'contained-hover': '#E09E00',
+          'outlined-hover': 'rgba(255, 180, 0, 0.08)',
+          'outlined-resting': 'rgba(255, 180, 0, 0.5)',
+        },
+        error: {
+          DEFAULT: '#FF4C51',
+          light: '#FF6166',
+          dark: '#A33134',
+          'contained-hover': '#E04347',
+          'outlined-hover': 'rgba(255, 76, 81, 0.08)',
+          'outlined-resting': 'rgba(255, 76, 81, 0.5)',
+        },
+        'text-primary': 'rgba(18, 24, 49, 0.87)',
+        'text-secondary': 'rgba(18, 24, 49, 0.68)',
+        'text-disabled': 'rgba(49, 54, 76, 0.38)',
+        'text-accent': 'rgba(0, 122, 255, 1)',
+        'action-active': 'rgba(18, 24, 49, 0.54)',
+        'action-hover': 'rgba(18, 24, 49, 0.04)',
+        'action-selected': 'rgba(18, 24, 49, 0.08)',
+        'action-disabled': 'rgba(18, 24, 49, 0.26)',
+        'action-disabled-bg': 'rgba(18, 24, 49, 0.12)',
+        'action-focus': 'rgba(18, 24, 49, 0.12)',
+      },
     },
   },
   plugins: [],
-}
+};

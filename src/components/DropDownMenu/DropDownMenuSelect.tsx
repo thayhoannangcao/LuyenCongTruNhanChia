@@ -6,7 +6,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/radix-ui/dropdown-menu';
 import { Search } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Fragment } from 'react';
@@ -75,15 +75,18 @@ const DropDownMenuSelect = ({
   )?.labelDisplay;
 
   return (
-    <DropdownMenu open={open} onOpenChange={(open) => !open && onClose?.()}>
+    <DropdownMenu
+      open={open}
+      onOpenChange={(open: boolean) => !open && onClose?.()}
+    >
       <DropdownMenuTrigger
         onClick={() => setOpen?.(true)}
         className={clsx(
           'cursor-pointer',
           variant === 'main' &&
-            'bg-primary !text-white hover:bg-primary-light [&[data-state=open]]:!bg-primary-light',
+            'bg-primary hover:bg-primary-light [&[data-state=open]]:!bg-primary-light !text-white',
           variant === 'inherit' &&
-            'rounded-[5px] bg-secondary-default text-text-primary hover:bg-secondary-default-hover [&[data-state=open]]:!bg-secondary-default-hover',
+            'bg-secondary-default text-text-primary hover:bg-secondary-default-hover [&[data-state=open]]:!bg-secondary-default-hover rounded-[5px]',
           triggerClassName,
           disabled && 'pointer-events-none opacity-50'
         )}
@@ -153,13 +156,13 @@ const DropDownMenuSelect = ({
           {items.map((item, index) => (
             <Fragment key={item.value ?? index}>
               <DropdownMenuRadioItem
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
                   item.action?.();
                 }}
                 disabled={item.disabled}
                 className={clsx(
-                  'my-1 flex min-h-[36px] cursor-pointer items-center justify-between px-3 py-1.5 hover:bg-action-selected',
+                  'hover:bg-action-selected my-1 flex min-h-[36px] cursor-pointer items-center justify-between px-3 py-1.5',
                   selectedValue === item.value && 'bg-body-background',
                   classNameItem
                 )}

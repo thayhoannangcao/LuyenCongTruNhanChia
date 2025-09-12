@@ -2,7 +2,7 @@ import {
   DropdownMenuContent,
   DropdownMenu,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/radix-ui/dropdown-menu';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 
