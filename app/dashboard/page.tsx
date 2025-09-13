@@ -72,7 +72,7 @@ export default function DashboardPage() {
               <div className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-md border bg-white shadow-lg">
                 <Button
                   title="Đổi mật khẩu"
-                  className="text-primary w-full bg-white hover:bg-gray-50"
+                  className="w-full bg-white text-primary hover:bg-gray-50"
                   variant="main"
                   onClick={() => {
                     setMenuOpen(false);
