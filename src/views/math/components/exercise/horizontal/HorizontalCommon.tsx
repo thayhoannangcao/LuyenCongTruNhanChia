@@ -23,7 +23,7 @@ export default function Horizontal({
 }: HorizontalProps) {
   return (
     <div>
-      <div className="mb-8 text-center">
+      {/* <div className="mb-8 text-center">
         <div className="mb-4 text-4xl font-bold">
           {exercise.nums.join(` ${operationText} `)} = ?
         </div>
@@ -85,7 +85,7 @@ export default function Horizontal({
           <div className="mb-2 text-lg font-semibold">Hết thời gian!</div>
           <div className="text-sm">Đáp án đúng: {exercise.correctAnswer}</div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

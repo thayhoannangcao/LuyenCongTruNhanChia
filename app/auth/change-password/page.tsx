@@ -3,7 +3,7 @@
 import ChangePasswordForm from '@/src/views/auth/components/ChangePasswordForm';
 import { useAuth } from '@/components/layouts/AuthProvider';
 import { useRouter } from 'next/navigation';
-import Button from '@/src/components/Button/Button';
+import Button from '@/src/components/Button';
 
 export default function ChangePasswordPage() {
   const { user, loading } = useAuth();
@@ -26,12 +26,9 @@ export default function ChangePasswordPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <div className="mb-6">
-          <Button
-            title="Quay lại"
-            size="lg"
-            variant="default"
-            onClick={() => router.back()}
-          />
+          <Button size="large" onClick={() => router.back()}>
+            Quay lại
+          </Button>
         </div>
         <ChangePasswordForm />
       </div>
