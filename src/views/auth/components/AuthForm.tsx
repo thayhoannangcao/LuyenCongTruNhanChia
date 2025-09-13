@@ -8,7 +8,7 @@ import {
   type SignUpData,
 } from '@/src/utils/auth';
 import { useToast } from '@/components/ui/ToastProvider';
-import Button from '@/src/components/Button/Button';
+import Button from '@/src/components/Button';
 
 interface AuthFormProps {
   mode: 'signin' | 'signup';
@@ -149,31 +149,23 @@ export default function AuthForm({
 
           <div>
             <Button
-              title={
-                loading
-                  ? 'Đang xử lý...'
-                  : mode === 'signin'
-                    ? 'Đăng nhập'
-                    : 'Đăng ký'
-              }
-              variant="main"
-              size="lg"
-              type="submit"
+              type="primary"
+              size="large"
+              htmlType="submit"
               className="w-full"
-              disable={loading}
-            />
+              disabled={loading}
+              loading={loading}
+            >
+              {mode === 'signin' ? 'Đăng nhập' : 'Đăng ký'}
+            </Button>
           </div>
 
           <div className="text-center">
-            <button
-              type="button"
-              onClick={onSwitchMode}
-              className="text-sm font-medium text-primary-600 hover:text-primary-500"
-            >
+            <Button type="link" onClick={onSwitchMode}>
               {mode === 'signin'
                 ? 'Chưa có tài khoản? Đăng ký ngay'
                 : 'Đã có tài khoản? Đăng nhập'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

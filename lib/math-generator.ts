@@ -30,6 +30,7 @@ export type SubtractionType = 'with_carry' | 'without_carry';
 export type InputDirectionType = 'rtl' | 'ltr';
 
 export type ExerciseType =
+  | 'default'
   | 'multi_multiplication_table'
   | 'multi_addition_to_multiplication'
   | 'multi_comparison'
