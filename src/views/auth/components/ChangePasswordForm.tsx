@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/ToastProvider';
 import { changePassword } from '@/src/utils/auth';
 import type { ChangePasswordPayload } from '@/src/types/types';
-import Button from '@/src/components/Button/Button';
+import Button from '@/src/components/Button';
+import TextInput from '@/src/components/TextInput';
+import Checkbox from '@/src/components/Checkbox';
 
 export default function ChangePasswordForm() {
   const router = useRouter();
@@ -93,14 +95,13 @@ export default function ChangePasswordForm() {
             Mật khẩu hiện tại
           </label>
           <div className="relative">
-            <input
-              type={showCurrent ? 'text' : 'password'}
+            <TextInput
               name="currentPassword"
               value={form.currentPassword}
               onChange={handleChange}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="Nhập mật khẩu hiện tại"
               autoComplete="current-password"
+              size="large"
             />
             <button
               type="button"
@@ -135,14 +136,13 @@ export default function ChangePasswordForm() {
             Mật khẩu mới
           </label>
           <div className="relative">
-            <input
-              type={showNew ? 'text' : 'password'}
+            <TextInput
               name="newPassword"
               value={form.newPassword}
               onChange={handleChange}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="Nhập mật khẩu mới"
               autoComplete="new-password"
+              size="large"
             />
             <button
               type="button"
@@ -177,13 +177,13 @@ export default function ChangePasswordForm() {
             Xác nhận mật khẩu mới
           </label>
           <div className="relative">
-            <input
-              type={showConfirm ? 'text' : 'password'}
+            <TextInput
+              name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="Nhập lại mật khẩu mới"
               autoComplete="new-password"
+              size="large"
             />
             <button
               type="button"
@@ -215,26 +215,25 @@ export default function ChangePasswordForm() {
         </div>
 
         <label className="inline-flex items-center space-x-2">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={form.signOutAfter}
             onChange={(e) =>
               setForm((prev) => ({ ...prev, signOutAfter: e.target.checked }))
             }
-            className="rounded border-gray-300"
-          />
-          <span className="text-sm text-gray-700">
+          >
             Đăng xuất sau khi đổi mật khẩu
-          </span>
+          </Checkbox>
         </label>
 
         <Button
-          title={loading ? 'Đang xử lý...' : 'Đổi mật khẩu'}
-          type="submit"
-          disable={loading}
+          type="primary"
+          htmlType="submit"
+          disabled={loading}
+          loading={loading}
           className="w-full"
-          variant="main"
-        />
+        >
+          Đổi mật khẩu
+        </Button>
 
         {error && (
           <div className="text-center text-sm text-red-600">{error}</div>

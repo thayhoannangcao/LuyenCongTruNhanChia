@@ -7,6 +7,8 @@ import {
   ExerciseType,
 } from '@/lib/math-generator';
 import { useEffect } from 'react';
+import Radio from '@/src/components/Radio';
+import Select from '@/src/components/Select';
 
 interface MultiSettingsProps {
   config: ExerciseConfig;
@@ -17,10 +19,41 @@ export default function MultiSettings({
   config,
   handleConfigChange,
 }: MultiSettingsProps) {
-
   useEffect(() => {
     handleConfigChange('calculationType', 'true');
+    handleConfigChange('exerciseType', 'multi_multiplication_table');
   }, []);
+
+  const options = [
+    { label: 'Bảng cửu chương', value: 'multi_multiplication_table' },
+    {
+      label: 'Chuyển phép cộng qua phép nhân',
+      value: 'multi_addition_to_multiplication',
+    },
+    { label: 'So sánh', value: 'multi_comparison' },
+    { label: 'Tìm số chưa biết', value: 'multi_find_unknown' },
+    { label: 'Khác', value: 'multi_other' },
+  ];
+
+  const optionsMultiplicationTable = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+    { label: '6', value: 6 },
+    { label: '7', value: 7 },
+    { label: '8', value: 8 },
+    { label: '9', value: 9 },
+  ];
+
+  const optionsNumsDigits = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+  ];
 
   return (
     <div className="space-y-4">
@@ -28,25 +61,19 @@ export default function MultiSettings({
         <label className="mb-2 block text-sm font-medium text-gray-700">
           Dạng bài:
         </label>
-        <select
+        <Select
+          options={options}
           value={config.exerciseType}
-          onChange={(e) => {
-            handleConfigChange('exerciseType', e.target.value as ExerciseType);
+          onChange={(value) => {
+            handleConfigChange('exerciseType', value as ExerciseType);
 
-            if (e.target.value !== 'multi_other') {
+            if (value !== 'multi_other') {
               handleConfigChange('calculationType', 'true');
             }
           }}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-        >
-          <option value="multi_multiplication_table">Bảng cửu chương</option>
-          <option value="multi_addition_to_multiplication">
-            Chuyển phép cộng qua phép nhân
-          </option>
-          <option value="multi_comparison">So sánh</option>
-          <option value="multi_find_unknown">Tìm số chưa biết</option>
-          <option value="multi_other">Khác</option>
-        </select>
+          className="w-full"
+          size="large"
+        />
       </div>
 
       {config.exerciseType === 'multi_multiplication_table' && (
@@ -54,26 +81,18 @@ export default function MultiSettings({
           <label className="mb-2 block text-sm font-medium text-gray-700">
             Bảng cửu chương:
           </label>
-          <select
+          <Select
+            options={optionsMultiplicationTable}
             value={config.multiplicationSettings.multiplicationTable}
-            onChange={(e) =>
+            onChange={(value) =>
               handleConfigChange('multiplicationSettings', {
                 ...config.multiplicationSettings,
-                multiplicationTable: parseInt(e.target.value),
+                multiplicationTable: parseInt(value as string, 10),
               })
             }
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-          </select>
+            className="w-full"
+            size="large"
+          />
         </div>
       )}
 
@@ -82,26 +101,18 @@ export default function MultiSettings({
           <label className="mb-2 block text-sm font-medium text-gray-700">
             Chọn số để chuyển phép cộng qua phép nhân:
           </label>
-          <select
+          <Select
+            options={optionsMultiplicationTable}
             value={config.multiplicationSettings.additionToMultiplicationTable}
-            onChange={(e) =>
+            onChange={(value) =>
               handleConfigChange('multiplicationSettings', {
                 ...config.multiplicationSettings,
-                additionToMultiplicationTable: parseInt(e.target.value),
+                additionToMultiplicationTable: parseInt(value as string, 10),
               })
             }
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-          </select>
+            className="w-full"
+            size="large"
+          />
         </div>
       )}
       {(config.exerciseType === 'multi_comparison' ||
@@ -112,45 +123,37 @@ export default function MultiSettings({
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Số chữ số của số thứ 1:
             </label>
-            <select
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            <Select
+              options={optionsNumsDigits}
               value={config.numsDigits[0]}
-              onChange={(e) => {
+              onChange={(value) => {
                 handleConfigChange('numsDigits', [
                   ...config.numsDigits.slice(0, 0),
-                  parseInt(e.target.value),
+                  parseInt(value as string, 10),
                   ...config.numsDigits.slice(1),
                 ]);
               }}
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
+              className="w-full"
+              size="large"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Số chữ số của số thứ 2:
             </label>
-            <select
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            <Select
+              options={optionsNumsDigits}
               value={config.numsDigits[1]}
-              onChange={(e) => {
+              onChange={(value) => {
                 handleConfigChange('numsDigits', [
                   ...config.numsDigits.slice(0, 1),
-                  parseInt(e.target.value),
+                  parseInt(value as string, 10),
                   ...config.numsDigits.slice(2),
                 ]);
               }}
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
+              className="w-full"
+              size="large"
+            />
           </div>
         </div>
       )}

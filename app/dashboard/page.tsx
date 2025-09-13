@@ -5,7 +5,7 @@ import ExerciseSettings from '@/src/views/math/components/ExerciseSettings';
 import { useRouter } from 'next/navigation';
 import { ROUTE_CHANGE_PASSWORD } from '@/src/constants/base.constants';
 import { useState, useMemo, useRef, useEffect } from 'react';
-import Button from '@/src/components/Button/Button';
+import Button from '@/src/components/Button';
 
 export default function DashboardPage() {
   const { user, signOut, loading } = useAuth();
@@ -71,25 +71,27 @@ export default function DashboardPage() {
             {menuOpen && (
               <div className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-md border bg-white shadow-lg">
                 <Button
-                  title="Đổi mật khẩu"
-                  className="w-full bg-white text-primary hover:bg-gray-50"
-                  variant="main"
+                  className="w-full border-none"
                   onClick={() => {
                     setMenuOpen(false);
                     router.push(ROUTE_CHANGE_PASSWORD);
                   }}
-                />
+                >
+                  Đổi mật khẩu
+                </Button>
 
                 <div className="h-px bg-gray-100" />
                 <Button
-                  className="w-full bg-white text-red-600 hover:bg-gray-50"
-                  title="Đăng xuất"
-                  variant="default"
+                  className="w-full border-none"
+                  danger
                   onClick={() => {
                     setMenuOpen(false);
                     signOut();
                   }}
-                />
+                  loading={loading}
+                >
+                  Đăng xuất
+                </Button>
               </div>
             )}
           </div>

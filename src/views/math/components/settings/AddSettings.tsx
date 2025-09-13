@@ -4,7 +4,9 @@ import {
   AdditionType,
   OperationType,
 } from '@/lib/math-generator';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Select from '@/src/components/Select';
+import Radio from '@/src/components/Radio';
 
 interface AddSettingsProps {
   config: ExerciseConfig;
@@ -18,16 +20,42 @@ export default function AddSettings({
   handleConfigChange,
 }: AddSettingsProps) {
   const [numTerms, setNumTerms] = useState(2);
+
+  useEffect(() => {
+    handleConfigChange('exerciseType', 'default');
+  }, []);
+
+  const options = [
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+  ];
+
+  const optionsDigits = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+    { label: '4', value: 4 },
+    { label: '5', value: 5 },
+  ];
+
+  const optionsAdditionType = [
+    { label: 'Không nhớ', value: 'without_carry' },
+    { label: 'Có nhớ', value: 'with_carry' },
+  ];
+
   return (
     <div className="space-y-4">
       <div>
         <label className="mb-2 block text-sm font-medium text-gray-700">
           Chọn số số hạng:
         </label>
-        <select
+        <Select
+          options={options}
           value={numTerms}
-          onChange={(e) => {
-            const newValue = parseInt(e.target.value, 10);
+          onChange={(value) => {
+            const newValue = parseInt(value as string, 10);
             setNumTerms(newValue);
 
             let newNumsDigits = [...config.numsDigits];
@@ -44,17 +72,9 @@ export default function AddSettings({
             handleConfigChange('numTerms', newValue);
             handleConfigChange('numsDigits', newNumsDigits);
           }}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-        >
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          {/* <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option> */}
-        </select>
+          className="w-full"
+          size="large"
+        />
       </div>
 
       {renderRangeValue(numTerms)}
@@ -65,41 +85,19 @@ export default function AddSettings({
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Số chữ số của số thứ {index + 1}:
             </label>
-            {/* <input
-              type="number"
-              min="1"
-              max={config.additionSettings.additionRangeType === 2 ? 2 : 9}
+            <Select
+              options={optionsDigits}
               value={config.numsDigits[index]}
-              onChange={(e) => {
+              onChange={(value) => {
                 handleConfigChange('numsDigits', [
                   ...config.numsDigits.slice(0, index),
-                  parseInt(e.target.value),
+                  value as number,
                   ...config.numsDigits.slice(index + 1),
                 ]);
               }}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-            /> */}
-            <select
-              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              value={config.numsDigits[index]}
-              onChange={(e) => {
-                handleConfigChange('numsDigits', [
-                  ...config.numsDigits.slice(0, index),
-                  parseInt(e.target.value),
-                  ...config.numsDigits.slice(index + 1),
-                ]);
-              }}
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              {/* <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option> */}
-            </select>
+              className="w-full"
+              size="large"
+            />
           </div>
         ))}
 
@@ -108,38 +106,18 @@ export default function AddSettings({
           Loại phép cộng:
         </label>
         <div className="space-y-2">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="additionType"
-              value="without_carry"
-              checked={config.additionSettings.additionType === 'without_carry'}
-              onChange={(e) =>
-                handleConfigChange('additionSettings', {
-                  ...config.additionSettings,
-                  additionType: e.target.value as AdditionType,
-                })
-              }
-              className="mr-2"
-            />
-            Không nhớ
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="additionType"
-              value="with_carry"
-              checked={config.additionSettings.additionType === 'with_carry'}
-              onChange={(e) =>
-                handleConfigChange('additionSettings', {
-                  ...config.additionSettings,
-                  additionType: e.target.value as AdditionType,
-                })
-              }
-              className="mr-2"
-            />
-            Có nhớ
-          </label>
+          <Radio
+            options={optionsAdditionType}
+            name="additionType"
+            value={config.additionSettings.additionType}
+            onChange={(e) =>
+              handleConfigChange('additionSettings', {
+                ...config.additionSettings,
+                additionType: e.target.value as AdditionType,
+              })
+            }
+            className="flex w-full flex-col gap-2"
+          />
         </div>
       </div>
     </div>

@@ -18,7 +18,7 @@ import type {
   ExerciseType,
   MultiplicationSettings,
 } from '@/lib/math-generator';
-import Button from '@/src/components/Button/Button';
+import Button from '@/src/components/Button';
 
 export default function PracticePage() {
   const params = useSearchParams();
@@ -117,12 +117,9 @@ export default function PracticePage() {
       <div className="mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between px-4">
           <h1 className="text-2xl font-bold text-gray-900">Luyện tập</h1>
-          <Button
-            title="Quay lại"
-            variant="default"
-            size="lg"
-            onClick={() => router.push('/dashboard')}
-          />
+          <Button size="large" onClick={() => router.push('/dashboard')}>
+            Quay lại
+          </Button>
         </div>
         <ExerciseSession
           config={config}

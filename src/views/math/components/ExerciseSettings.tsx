@@ -17,13 +17,17 @@ import {
 } from '@/lib/math-generator';
 import SubSettings from './settings/SubSettings';
 import MultiSettings from './settings/MultiSettings';
-import Button from '@/src/components/Button/Button';
+import Button from '@/src/components/Button';
+import Select from '@/src/components/Select';
+import Radio from '@/src/components/Radio';
+import InputNumber from '@/src/components/InputNumber';
 
 interface ExerciseSettingsProps {
   onStart: (config: ExerciseConfig) => void;
 }
 
 export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
+  const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<ExerciseConfig>({
     operation: 'multiplication',
     additionSettings: {
@@ -40,7 +44,7 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
       multiplicationTable: 2,
       additionToMultiplicationTable: 2,
     },
-    exerciseType: 'multi_multiplication_table',
+    exerciseType: 'default',
     divisionSettings: {},
     numTerms: 2,
     numsDigits: [1, 1],
@@ -62,7 +66,7 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     // Validation
     if (config.numsDigits.some((digit) => digit < 1 || digit > 9)) {
       alert('Vui lòng nhập số chữ số từ 1 đến 9');
@@ -167,6 +171,7 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
     // console.log('config', config);
 
     onStart(config);
+    setLoading(false);
   };
 
   // console.log('config.numsDigits', config.numsDigits)
@@ -175,6 +180,29 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
     setConfig((prev) => ({ ...prev, [key]: value }));
   };
 
+  const options = [
+    { label: 'Cộng (+)', value: 'addition' },
+    { label: 'Trừ (-)', value: 'subtraction' },
+    { label: 'Nhân (×)', value: 'multiplication' },
+    { label: 'Chia (÷)', value: 'division' },
+  ];
+
+  const optionsAdditionRangeType = [
+    { label: 'Trong phạm vi ' + config.numTerms + '0', value: 1 },
+    { label: 'Trong phạm vi 100', value: 2 },
+    { label: 'Tự chọn', value: 3 },
+  ];
+
+  const optionsTimeType = [
+    { label: 'Có', value: 'true' },
+    { label: 'Không', value: 'false' },
+  ];
+
+  const optionsInputCalculationType = [
+    { label: 'Tính', value: 'true' },
+    { label: 'Đặt tính rồi tính', value: 'false' },
+  ];
+
   const renderRangeValue = (numTerms: number) => {
     return (
       <div>
@@ -182,73 +210,33 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
           Phạm vi:
         </label>
         <div className="space-y-2">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="additionRangeType"
-              value="1"
-              checked={config.additionSettings.additionRangeType === 1}
-              onChange={(e) =>
-                handleConfigChange('additionSettings', {
-                  ...config.additionSettings,
-                  additionRangeType: parseInt(
-                    e.target.value
-                  ) as AdditionRangeType,
-                })
-              }
-              className="mr-2"
-            />
-            Trong phạm vi {numTerms}0
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="additionRangeType"
-              value="2"
-              checked={config.additionSettings.additionRangeType === 2}
-              onChange={(e) =>
-                handleConfigChange('additionSettings', {
-                  ...config.additionSettings,
-                  additionRangeType: parseInt(
-                    e.target.value
-                  ) as AdditionRangeType,
-                })
-              }
-              className="mr-2"
-            />
-            Trong phạm vi 100
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="additionRangeType"
-              value="3"
-              checked={config.additionSettings.additionRangeType === 3}
-              onChange={(e) =>
-                handleConfigChange('additionSettings', {
-                  ...config.additionSettings,
-                  additionRangeType: parseInt(
-                    e.target.value
-                  ) as AdditionRangeType,
-                })
-              }
-              className="mr-2"
-            />
-            Tự chọn
-          </label>
+          <Radio
+            options={optionsAdditionRangeType}
+            name="additionRangeType"
+            value={config.additionSettings.additionRangeType}
+            onChange={(e) =>
+              handleConfigChange('additionSettings', {
+                ...config.additionSettings,
+                additionRangeType: e.target.value as AdditionRangeType,
+              })
+            }
+            className="flex w-full flex-col gap-2"
+            size="large"
+          />
+
           {config.additionSettings.additionRangeType === 3 && (
             <label className="flex items-center">
-              <input
-                type="number"
+              <InputNumber
                 name="additionRangeValue"
                 value={config.additionSettings.additionRangeValue}
-                onChange={(e) =>
+                onChange={(value) =>
                   handleConfigChange('additionSettings', {
                     ...config.additionSettings,
-                    additionRangeValue: parseInt(e.target.value),
+                    additionRangeValue: value,
                   })
                 }
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-[200px]"
+                size="large"
               />
             </label>
           )}
@@ -264,75 +252,33 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
           Phạm vi:
         </label>
         <div className="space-y-2">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="subtractionRangeType"
-              value="1"
-              checked={config.subtractionSettings.subtractionRangeType === 1}
-              onChange={(e) =>
-                handleConfigChange('subtractionSettings', {
-                  ...config.subtractionSettings,
-                  subtractionRangeType: parseInt(
-                    e.target.value
-                  ) as AdditionRangeType,
-                })
-              }
-              className="mr-2"
-            />
-            Trong phạm vi {numTerms}0
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="subtractionRangeType"
-              value="2"
-              checked={config.subtractionSettings.subtractionRangeType === 2}
-              onChange={(e) =>
-                handleConfigChange('subtractionSettings', {
-                  ...config.subtractionSettings,
-                  subtractionRangeType: parseInt(
-                    e.target.value
-                  ) as AdditionRangeType,
-                })
-              }
-              className="mr-2"
-            />
-            Trong phạm vi 100
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name="subtractionRangeType"
-              value="3"
-              checked={config.subtractionSettings.subtractionRangeType === 3}
-              onChange={(e) =>
-                handleConfigChange('subtractionSettings', {
-                  ...config.subtractionSettings,
-                  subtractionRangeType: parseInt(
-                    e.target.value
-                  ) as AdditionRangeType,
-                })
-              }
-              className="mr-2"
-            />
-            Tự chọn
-          </label>
+          <Radio
+            name="subtractionRangeType"
+            value={config.subtractionSettings.subtractionRangeType}
+            options={optionsAdditionRangeType}
+            onChange={(value) =>
+              handleConfigChange('subtractionSettings', {
+                ...config.subtractionSettings,
+                subtractionRangeType: parseInt(
+                  value.target.value
+                ) as AdditionRangeType,
+              })
+            }
+            className="flex w-full flex-col gap-2"
+          />
           {config.subtractionSettings.subtractionRangeType === 3 && (
-            <label className="flex items-center">
-              <input
-                type="number"
-                name="subtractionRangeValue"
-                value={config.subtractionSettings.subtractionRangeValue}
-                onChange={(e) =>
-                  handleConfigChange('subtractionSettings', {
-                    ...config.subtractionSettings,
-                    subtractionRangeValue: parseInt(e.target.value),
-                  })
-                }
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </label>
+            <InputNumber
+              name="subtractionRangeValue"
+              value={config.subtractionSettings.subtractionRangeValue}
+              onChange={(value) =>
+                handleConfigChange('subtractionSettings', {
+                  ...config.subtractionSettings,
+                  subtractionRangeValue: parseInt(value as string, 10),
+                })
+              }
+              className="w-[200px]"
+              size="large"
+            />
           )}
         </div>
       </div>
@@ -344,23 +290,20 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
       <h2 className="mb-6 text-center text-2xl font-bold">Cài đặt bài tập</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Loại phép tính */}
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700">
             Chọn phép tính:
           </label>
-          <select
+
+          <Select
+            options={options}
             value={config.operation}
-            onChange={(e) =>
-              handleConfigChange('operation', e.target.value as OperationType)
+            onChange={(value) =>
+              handleConfigChange('operation', value as OperationType)
             }
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="addition">Cộng (+)</option>
-            <option value="subtraction">Trừ (-)</option>
-            <option value="multiplication">Nhân (×)</option>
-            <option value="division">Chia (÷)</option>
-          </select>
+            className="w-full"
+            size="large"
+          />
         </div>
 
         {/* Cài đặt phép cộng đặc biệt */}
@@ -392,15 +335,13 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
           <label className="mb-2 block text-sm font-medium text-gray-700">
             Số câu hỏi:
           </label>
-          <input
-            type="number"
-            min="1"
-            max="50"
+          <InputNumber
+            min={1}
+            max={50}
             value={config.totalQuestions}
-            onChange={(e) =>
-              handleConfigChange('totalQuestions', parseInt(e.target.value))
-            }
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            onChange={(value) => handleConfigChange('totalQuestions', value)}
+            className="w-[200px]"
+            size="large"
           />
         </div>
 
@@ -413,38 +354,19 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
                 Phép tính:
               </label>
               <div className="space-y-2">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="calculation"
-                    value="true"
-                    checked={config.calculationType === 'true'}
-                    onChange={(e) =>
-                      handleConfigChange(
-                        'calculationType',
-                        e.target.value as CalculationType
-                      )
-                    }
-                    className="mr-2"
-                  />
-                  Tính
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="calculation"
-                    value="false"
-                    checked={config.calculationType === 'false'}
-                    onChange={(e) =>
-                      handleConfigChange(
-                        'calculationType',
-                        e.target.value as CalculationType
-                      )
-                    }
-                    className="mr-2"
-                  />
-                  Đặt tính rồi tính
-                </label>
+                <Radio
+                  options={optionsInputCalculationType}
+                  name="calculation"
+                  value={config.calculationType}
+                  onChange={(value) =>
+                    handleConfigChange(
+                      'calculationType',
+                      value.target.value as CalculationType
+                    )
+                  }
+                  className="flex w-full flex-col gap-2"
+                  size="large"
+                />
               </div>
             </div>
           )}
@@ -454,57 +376,42 @@ export default function ExerciseSettings({ onStart }: ExerciseSettingsProps) {
             Tính thời gian:
           </label>
           <div className="space-y-2">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="time"
-                value="true"
-                checked={config.timeType === 'true'}
-                onChange={(e) =>
-                  handleConfigChange('timeType', e.target.value as TimeType)
-                }
-                className="mr-2"
-              />
-              Có
-            </label>
+            <Radio
+              options={optionsTimeType}
+              name="timeType"
+              value={config.timeType}
+              onChange={(e) =>
+                handleConfigChange('timeType', e.target.value as TimeType)
+              }
+              className="mr-2"
+              size="large"
+            />
             {config.timeType === 'true' && (
               <label className="flex items-center">
-                <input
-                  type="number"
+                <InputNumber
                   min="0"
                   name="timeValue"
                   value={config.timeValue}
-                  onChange={(e) =>
-                    handleConfigChange('timeValue', e.target.value)
-                  }
-                  className="mr-2 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  onChange={(value) => handleConfigChange('timeValue', value)}
+                  className="mr-2 w-[200px]"
+                  size="large"
                 />
                 Giây
               </label>
             )}
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="time"
-                value="false"
-                checked={config.timeType === 'false'}
-                onChange={(e) =>
-                  handleConfigChange('timeType', e.target.value as TimeType)
-                }
-                className="mr-2"
-              />
-              Không
-            </label>
           </div>
         </div>
 
         <Button
-          title="Bắt đầu"
           className="w-full"
-          variant="main"
-          size="lg"
-          type="submit"
-        />
+          type="primary"
+          size="large"
+          htmlType="submit"
+          // disabled={loading}
+          // loading={loading}
+        >
+          Bắt đầu
+        </Button>
       </form>
     </div>
   );

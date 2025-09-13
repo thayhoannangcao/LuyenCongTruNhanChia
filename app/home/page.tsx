@@ -38,8 +38,11 @@ export default function HomePage() {
                   window.location.href = '/auth/login';
                 }
               }}
-              className="btn-primary px-8 py-3 text-lg"
-            />
+              type="primary"
+              size="large"
+            >
+              Bắt đầu luyện tập
+            </Button>
 
             <div className="text-sm text-gray-500">
               {user
