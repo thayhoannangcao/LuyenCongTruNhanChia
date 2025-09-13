@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/layouts/AuthProvider';
 import { ToastProvider } from '@/components/ui/ToastProvider';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,7 +25,10 @@ export default function RootLayout({
     <html lang="vi">
       <body className={inter.className}>
         <AuthProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            {children}
+            <SpeedInsights />
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>
