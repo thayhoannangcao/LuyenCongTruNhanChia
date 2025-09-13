@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/components/layouts/AuthProvider';
-import Button from '@/src/components/Button/Button';
+import Button from '@/src/components/Button';
 
 export default function HomePage() {
   const { user, loading } = useAuth();
@@ -31,8 +31,6 @@ export default function HomePage() {
 
           <div className="space-y-4">
             <Button
-              title="Bắt đầu luyện tập"
-              size="lg"
               onClick={() => {
                 if (user) {
                   window.location.href = '/dashboard';
@@ -41,7 +39,6 @@ export default function HomePage() {
                 }
               }}
               className="btn-primary px-8 py-3 text-lg"
-              variant="main"
             />
 
             <div className="text-sm text-gray-500">
