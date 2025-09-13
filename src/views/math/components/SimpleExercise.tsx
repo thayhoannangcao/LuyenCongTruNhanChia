@@ -42,8 +42,6 @@ export default function SimpleExercise({
     };
   }, [exercise, config.timeType, config.timeValue]);
 
-  console.log('exercise', exercise);
-
   return (
     <div className="mx-auto w-full rounded-lg bg-white p-6 shadow-md">
       {config.timeType === 'true' && (
