@@ -3,6 +3,10 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import {
+  getCurrentUser as getUserApi,
+  signOut as signOutApi,
+} from '@/src/utils/auth';
 import type { AuthUser } from '@/src/utils/auth';
 
 interface AuthContextType {
@@ -22,9 +26,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      const timeout = new Promise<void>((resolve) => setTimeout(resolve, 5000));
       try {
-        await Promise.race([getCurrentUser(), timeout]);
+        await getCurrentUser();
       } finally {
         if (!initializedRef.current) {
           initializedRef.current = true;
@@ -82,33 +85,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const getCurrentUser = async () => {
     try {
-      const {
-        data: { user: authUser },
-        error,
-      } = await supabase.auth.getUser();
-
-      if (error || !authUser) {
-        setUser(null);
-        return;
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('id, username, full_name, role')
-        .eq('id', authUser.id)
-        .single();
-
-      if (profileError || !profile) {
-        setUser(null);
-        return;
-      }
-
-      setUser({
-        id: profile.id,
-        username: profile.username,
-        full_name: profile.full_name,
-        role: profile.role || (profile.username === 'admin' ? 'admin' : 'user'),
-      });
+      const u = await getUserApi();
+      setUser(u);
     } catch (error) {
       console.error('Error getting current user:', error);
       setUser(null);
@@ -122,9 +100,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
-      setUser(null);
-      router.replace('/auth/login');
+      const res = await signOutApi();
+      if (res.success) {
+        setUser(null);
+        router.replace('/auth/login');
+      }
     } catch (error) {
       console.error('Error signing out:', error);
     }

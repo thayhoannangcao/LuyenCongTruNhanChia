@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/components/layouts/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/ToastProvider';
+import { useApi } from '@/src/utils/use-api';
 import Modal from '@/components/ui/Modal';
+// Use API routes to avoid bundling server-only code on client
 
 interface AdminUser {
   id: string;
@@ -18,6 +20,7 @@ export default function AdminDashboardPage() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const toast = useToast();
+  const api = useApi();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -38,10 +41,8 @@ export default function AdminDashboardPage() {
   const loadUsers = async () => {
     try {
       setLoadingUsers(true);
-      const res = await fetch('/api/admin/users', { cache: 'no-store' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Không tải được users');
-      setUsers(data.users);
+      const res = await api.get<{ users: AdminUser[] }>('/api/admin/users');
+      if (res.success && res.data?.users) setUsers(res.data.users);
     } catch (e: any) {
       toast.error(e.message || 'Lỗi tải danh sách users');
     } finally {
@@ -158,6 +159,7 @@ function CreateUserModal({
   onCreated: () => void;
 }) {
   const toast = useToast();
+  const api = useApi();
   const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
@@ -171,14 +173,12 @@ function CreateUserModal({
     }
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, full_name: fullName, password, role }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Tạo user thất bại');
-      toast.success('Tạo user thành công');
+      const res = await api.post<{ user: AdminUser }, any>(
+        '/api/admin/users',
+        { username, full_name: fullName, password, role },
+        { showSuccessToast: true, successMessage: 'Tạo user thành công' }
+      );
+      if (!res.success) return;
       setUsername('');
       setFullName('');
       setPassword('');
@@ -262,6 +262,7 @@ function UsersTable({
   onClickCreate: () => void;
 }) {
   const toast = useToast();
+  const api = useApi();
   const [editing, setEditing] = useState<AdminUser | null>(null);
   const [form, setForm] = useState<Partial<AdminUser>>({});
   const [confirmId, setConfirmId] = useState<string | null>(null);
@@ -277,19 +278,17 @@ function UsersTable({
 
   const saveEdit = async () => {
     try {
-      const res = await fetch('/api/admin/users', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const res = await api.patch<{ user: AdminUser }, any>(
+        '/api/admin/users',
+        {
           id: form.id,
           username: form.username,
           full_name: form.full_name,
           role: form.role,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Cập nhật thất bại');
-      toast.success('Cập nhật user thành công');
+        },
+        { showSuccessToast: true, successMessage: 'Cập nhật user thành công' }
+      );
+      if (!res.success) return;
       onChanged();
       cancelEdit();
     } catch (e: any) {
@@ -299,12 +298,11 @@ function UsersTable({
 
   const doDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/users?id=${id}`, {
-        method: 'DELETE',
+      const res = await api.del(`/api/admin/users?id=${id}`, {
+        showSuccessToast: true,
+        successMessage: 'Xóa user thành công',
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Xóa thất bại');
-      toast.success('Xóa user thành công');
+      if (!res.success) return;
       onChanged();
     } catch (e: any) {
       toast.error(e.message || 'Lỗi xóa user');

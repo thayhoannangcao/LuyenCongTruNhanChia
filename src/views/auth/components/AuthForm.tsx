@@ -1,12 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  signIn,
-  signUp,
-  type SignInData,
-  type SignUpData,
-} from '@/src/utils/auth';
+import type { SignInData, SignUpData } from '@/src/types/types';
+import { signIn, signUp } from '@/src/utils/auth';
 import { useToast } from '@/components/ui/ToastProvider';
 import Button from '@/src/components/Button';
 
@@ -47,7 +43,8 @@ export default function AuthForm({
         toast.success(
           mode === 'signin' ? 'Đăng nhập thành công' : 'Đăng ký thành công'
         );
-        onSuccess();
+        // Defer to ensure supabase auth state listeners run
+        setTimeout(() => onSuccess(), 0);
       } else {
         setError(result.error || 'Có lỗi xảy ra');
         toast.error(result.error || 'Có lỗi xảy ra');

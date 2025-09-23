@@ -1,4 +1,5 @@
 'use client';
+import { useApi } from '@/src/utils/use-api';
 
 import { useState, useEffect, useCallback } from 'react';
 import {
@@ -8,7 +9,7 @@ import {
 } from '@/lib/math-generator';
 import ScoreBoard from './ScoreBoard';
 import SimpleExercise from './SimpleExercise';
-import { supabase } from '@/lib/supabase';
+// Call Next API routes to reach backend services
 import { useAuth } from '@/components/layouts/AuthProvider';
 
 interface ExerciseSessionProps {
@@ -27,39 +28,21 @@ export default function ExerciseSession({
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
+  const api = useApi();
 
   const createSession = useCallback(async () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('practice_sessions')
-        .insert({
-          user_id: user.id,
-          operation_type: config.operation,
-          difficulty_level: getDifficultyLevel(),
-          addition_range: config.additionSettings.additionRangeType,
-          addition_type: config.additionSettings.additionType,
-          total_questions: config.totalQuestions,
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating session:', error);
-      } else {
-        setSessionId(data.id);
-      }
+      const res = await api.post<{ sessionId: string }>(
+        '/api/sessions/create',
+        { userId: user.id, config }
+      );
+      if (res.success && res.data?.sessionId) setSessionId(res.data.sessionId);
     } catch (error) {
       console.error('Error creating session:', error);
     }
-  }, [
-    user,
-    config.operation,
-    config.additionSettings.additionRangeType,
-    config.additionSettings.additionType,
-    config.totalQuestions,
-  ]);
+  }, [user, config]);
 
   useEffect(() => {
     // Tạo danh sách bài tập
@@ -102,14 +85,18 @@ export default function ExerciseSession({
         : 0;
 
       try {
-        await supabase.from('practice_results').insert({
-          session_id: sessionId,
-          question: currentExercise.nums.join(' + '),
-          user_answer: currentExercise.userAnswer || '',
-          correct_answer: currentExercise.correctAnswer,
-          is_correct: isCorrect,
-          time_taken: timeTaken,
-        });
+        await api.post(
+          '/api/sessions/save-result',
+          {
+            sessionId,
+            question: currentExercise.nums.join(' + '),
+            userAnswer: currentExercise.userAnswer || '',
+            correctAnswer: currentExercise.correctAnswer,
+            isCorrect,
+            timeTaken,
+          },
+          { showErrorToast: false }
+        );
       } catch (error) {
         console.error('Error saving result:', error);
       }
@@ -130,14 +117,11 @@ export default function ExerciseSession({
     // Cập nhật session trong database
     if (sessionId && user) {
       try {
-        await supabase
-          .from('practice_sessions')
-          .update({
-            correct_answers: correctAnswers,
-            incorrect_answers: incorrectAnswers,
-            completed_at: new Date().toISOString(),
-          })
-          .eq('id', sessionId);
+        await api.post(
+          '/api/sessions/update',
+          { sessionId, correctAnswers, incorrectAnswers },
+          { showErrorToast: false }
+        );
       } catch (error) {
         console.error('Error updating session:', error);
       }
