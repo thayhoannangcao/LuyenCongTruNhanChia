@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { AuthUser } from '@/src/utils/auth';
@@ -18,26 +18,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    // Lấy user hiện tại khi component mount
-    getCurrentUser();
+  const initializedRef = useRef(false);
 
-    // Lắng nghe thay đổi auth state
+  useEffect(() => {
+    const initAuth = async () => {
+      const timeout = new Promise<void>((resolve) => setTimeout(resolve, 5000));
+      try {
+        await Promise.race([getCurrentUser(), timeout]);
+      } finally {
+        if (!initializedRef.current) {
+          initializedRef.current = true;
+          setLoading(false);
+        }
+      }
+    };
+
+    initAuth();
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         await getCurrentUser();
       } else {
         setUser(null);
       }
-      setLoading(false);
+      if (!initializedRef.current) {
+        initializedRef.current = true;
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  // Theo dõi single-session: nếu current_client_id thay đổi khác client hiện tại -> sign out
   useEffect(() => {
     if (!user) return;
     const clientId = getClientId();
@@ -64,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, router]);
 
   const getCurrentUser = async () => {
     try {
@@ -78,7 +92,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Lấy thông tin profile từ bảng users
       const { data: profile, error: profileError } = await supabase
         .from('users')
         .select('id, username, full_name, role')
@@ -100,7 +113,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error getting current user:', error);
       setUser(null);
     } finally {
-      setLoading(false);
+      if (!initializedRef.current) {
+        initializedRef.current = true;
+        setLoading(false);
+      }
     }
   };
 

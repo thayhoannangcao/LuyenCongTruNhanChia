@@ -141,11 +141,11 @@ export default function AuthForm({
             </div>
           </div>
 
-          {error && (
+          {/* {error && (
             <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
             </div>
-          )}
+          )} */}
 
           <div>
             <Button
@@ -160,13 +160,13 @@ export default function AuthForm({
             </Button>
           </div>
 
-          <div className="text-center">
+          {/* <div className="text-center">
             <Button type="link" onClick={onSwitchMode}>
               {mode === 'signin'
                 ? 'Chưa có tài khoản? Đăng ký ngay'
                 : 'Đã có tài khoản? Đăng nhập'}
             </Button>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>
