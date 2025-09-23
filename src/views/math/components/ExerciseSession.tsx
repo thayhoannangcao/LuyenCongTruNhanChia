@@ -1,4 +1,5 @@
 'use client';
+import { useApi } from '@/src/utils/use-api';
 
 import { useState, useEffect, useCallback } from 'react';
 import {
@@ -27,19 +28,17 @@ export default function ExerciseSession({
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
+  const api = useApi();
 
   const createSession = useCallback(async () => {
     if (!user) return;
 
     try {
-      const res = await fetch('/api/sessions/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, config }),
-      });
-      const json = await res.json();
-      if (!res.ok) console.error('Error creating session:', json.error);
-      else setSessionId(json.sessionId);
+      const res = await api.post<{ sessionId: string }>(
+        '/api/sessions/create',
+        { userId: user.id, config }
+      );
+      if (res.success && res.data?.sessionId) setSessionId(res.data.sessionId);
     } catch (error) {
       console.error('Error creating session:', error);
     }
@@ -86,18 +85,18 @@ export default function ExerciseSession({
         : 0;
 
       try {
-        await fetch('/api/sessions/save-result', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+        await api.post(
+          '/api/sessions/save-result',
+          {
             sessionId,
             question: currentExercise.nums.join(' + '),
             userAnswer: currentExercise.userAnswer || '',
             correctAnswer: currentExercise.correctAnswer,
             isCorrect,
             timeTaken,
-          }),
-        });
+          },
+          { showErrorToast: false }
+        );
       } catch (error) {
         console.error('Error saving result:', error);
       }
@@ -118,11 +117,11 @@ export default function ExerciseSession({
     // Cập nhật session trong database
     if (sessionId && user) {
       try {
-        await fetch('/api/sessions/update', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId, correctAnswers, incorrectAnswers }),
-        });
+        await api.post(
+          '/api/sessions/update',
+          { sessionId, correctAnswers, incorrectAnswers },
+          { showErrorToast: false }
+        );
       } catch (error) {
         console.error('Error updating session:', error);
       }

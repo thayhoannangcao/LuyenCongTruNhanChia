@@ -9,7 +9,15 @@ export default function LoginPage() {
     <AuthForm
       mode="signin"
       onSuccess={() => {
-        router.replace('/dashboard');
+        // Ensure navigation even if React state updates are pending
+        router.push('/dashboard');
+        if (typeof window !== 'undefined') {
+          setTimeout(() => {
+            if (window.location.pathname !== '/dashboard') {
+              window.location.href = '/dashboard';
+            }
+          }, 50);
+        }
       }}
       onSwitchMode={() => {
         router.push('/auth/register');
