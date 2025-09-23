@@ -5,6 +5,7 @@ import { useAuth } from '@/components/layouts/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/ToastProvider';
 import Modal from '@/components/ui/Modal';
+// Use API routes to avoid bundling server-only code on client
 
 interface AdminUser {
   id: string;

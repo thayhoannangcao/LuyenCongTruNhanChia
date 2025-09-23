@@ -3,6 +3,10 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import {
+  getCurrentUser as getUserApi,
+  signOut as signOutApi,
+} from '@/src/utils/auth';
 import type { AuthUser } from '@/src/utils/auth';
 
 interface AuthContextType {
@@ -82,33 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const getCurrentUser = async () => {
     try {
-      const {
-        data: { user: authUser },
-        error,
-      } = await supabase.auth.getUser();
-
-      if (error || !authUser) {
-        setUser(null);
-        return;
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('id, username, full_name, role')
-        .eq('id', authUser.id)
-        .single();
-
-      if (profileError || !profile) {
-        setUser(null);
-        return;
-      }
-
-      setUser({
-        id: profile.id,
-        username: profile.username,
-        full_name: profile.full_name,
-        role: profile.role || (profile.username === 'admin' ? 'admin' : 'user'),
-      });
+      const user = await getUserApi();
+      setUser(user);
     } catch (error) {
       console.error('Error getting current user:', error);
       setUser(null);
@@ -122,9 +101,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
-      setUser(null);
-      router.replace('/auth/login');
+      const result = await signOutApi();
+      if (result.success) {
+        setUser(null);
+        router.replace('/auth/login');
+      }
     } catch (error) {
       console.error('Error signing out:', error);
     }
